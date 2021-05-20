@@ -1,0 +1,1 @@
+f = 5 x ^ 2 + 2 x + 1 ; PRINT f ( 0 ) ; roots = SOLVE f IN REALS ; PLOT f ;
