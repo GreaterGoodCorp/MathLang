@@ -86,3 +86,17 @@ class Lexer:
     def get_parser(self):
         self.initialise_tokens()
         return self.lexer.build()
+
+
+if __name__ == '__main__':
+    from pathlib import Path
+    lexer = Lexer().get_parser()
+    path_to_test_data = (Path(__file__).parent.parent / "Tests" / "test_data").absolute()
+    path_to_source1 = path_to_test_data / "source1.gp"
+    with open(path_to_source1) as fp:
+        source_code = fp.read()
+    tokens = lexer.lex(source_code)
+    s = " ".join([token.value for token in tokens])
+    path_to_lexed_source1 = path_to_test_data / "source1.lexed"
+    with open(path_to_lexed_source1) as fp:
+        assert fp.read().strip("\n") == s
