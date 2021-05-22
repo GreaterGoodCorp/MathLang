@@ -2,89 +2,107 @@ import re
 
 from rply import LexerGenerator
 
+# Number sets
+sets = ("complexes", "reals", "integers", "naturals")
+
+# This tuple is the master token-pattern pairs list
+token_pair = (
+    # For strings
+    ("STRING", r'(?<=").*(?=")'),
+
+    # For reserved keywords
+    # 1. Print
+    ("PRINT", r"print"),
+    # 2. Plot
+    ("PLOT", r"plot"),
+    # 3. Solve
+    ("SOLVE", r"solve"),
+    # 4. In
+    ("IN", r"in"),
+
+    # For flow controls
+    # 1. If
+    ("IF", r"if"),
+    ("ENDIF", r"endif"),
+    # 2. While
+    ("WHILE", r"while"),
+    ("ENDWHILE", r"endwhile"),
+
+    # For number sets
+    ("SET", r"|".join(sets)),
+
+    # For identifiers
+    # At most 64 characters
+    ("ID", r"[_a-zA-Z][_a-zA-Z0-9]{0,63}"),
+
+    # For numbers
+    ("NUMBER", r"\d+(?:\.\d+)?"),
+
+    # For special symbols
+    # 1. Parentheses
+    ("LPAREN", r"\("),
+    ("RPAREN", r"\)"),
+    # 2. Square brackets
+    ("LBRACKET", r"\["),
+    ("RBRACKET", r"\]"),
+    # 3. Semicolon
+    ("SEMICOLON", r"\;"),
+    # 4. Newline
+    # Works for both Windows, Linux and MacOS
+    ("NEWLINE", r"(\r\n|\r|\n)+"),
+
+    # For operators
+    # 1. Plus
+    ("PLUS", r"\+"),
+    # 2. Minus
+    ("MINUS", r"-"),
+    # 3. Times
+    ("TIMES", r"\*"),
+    # 4. Divide
+    ("DIVIDE", r"\/"),
+    # 5. Carat
+    ("CARAT", r"\^"),
+    # 6. Equal
+    ("EQUAL", r"="),
+
+    # For comparison operators
+    ("LESS", r"<"),
+    ("MORE", r">"),
+)
+
+# This tuple is the master token list
+tokens = (_[0] for _ in token_pair)
+
+# This tuple is the master ignored token list
+ignored_tokens = (
+    # Whitespaces
+    r" ",
+    # Tabs
+    r"\t",
+    # Comments (# ....)
+    r"#.*"
+)
+
 
 class Lexer:
     def __init__(self):
+        self.token_pair = token_pair
+        self.tokens = tokens
+        self.ignored_tokens = ignored_tokens
         self.lexer = LexerGenerator()
 
-    def add_token(self, name: str, pattern: str, flag: int = 0):
-        # In-sensitive language
-        flag |= re.IGNORECASE
-        self.lexer.add(name, pattern, flag)
+    def add_tokens(self):
+        for pair in self.token_pair:
+            self.lexer.add(pair[0], pair[1], re.IGNORECASE)
 
-    def initialise_tokens(self):
-        # For strings
-        self.add_token("STRING", r'(?<=").*(?=")')
+    def get_lexer(self):
+        # Add accepted tokens
+        for pair in self.token_pair:
+            self.lexer.add(pair[0], pair[1], re.IGNORECASE)
 
-        # For reserved keywords
-        # 1. Print
-        self.add_token("PRINT", r"print")
-        # 2. Plot
-        self.add_token("PLOT", r"plot")
-        # 3. Solve
-        self.add_token("SOLVE", r"solve")
-        # 4. In
-        self.add_token("IN", r"in")
-
-        # For flow controls
-        # 1. If
-        self.add_token("IF", r"if")
-        self.add_token("ENDIF", r"endif")
-        # 2. While
-        self.add_token("WHILE", r"while")
-        self.add_token("ENDWHILE", r"endwhile")
-
-        # For number sets
-        sets = ("complexes", "reals", "integers", "naturals")
-        self.add_token("SET", r"|".join(sets))
-
-        # For identifiers
-        # At most 64 characters
-        self.add_token("ID", r"[_a-zA-Z][_a-zA-Z0-9]{0,63}")
-
-        # For numbers
-        self.add_token("NUMBER", r"\d+(?:\.\d+)?")
-
-        # For special symbols
-        # 1. Parentheses
-        self.add_token("LPAREN", r"\(")
-        self.add_token("RPAREN", r"\)")
-        # 2. Square brackets
-        self.add_token("LBRACKET", r"\[")
-        self.add_token("RBRACKET", r"\]")
-        # 3. Semicolon
-        self.add_token("SEMICOLON", r"\;")
-        # 4. Newline
-        # Works for both Windows, Linux and MacOS
-        self.add_token("NEWLINE", r"\r\n|\r|\n")
-
-        # For operators
-        # 1. Plus
-        self.add_token("PLUS", r"\+")
-        # 2. Minus
-        self.add_token("MINUS", r"-")
-        # 3. Times
-        self.add_token("TIMES", r"\*")
-        # 4. Divide
-        self.add_token("DIVIDE", r"\/")
-        # 5. Carat
-        self.add_token("CARAT", r"\^")
-        # 6. Equal
-        self.add_token("EQUAL", r"=")
-
-        # For comparison operators
-        self.add_token("LESS", r"<")
-        self.add_token("MORE", r">")
-
-        # Ignore spaces and tabs
-        self.lexer.ignore(r"\s+")
-        self.lexer.ignore(r"\t")
-
-        # Ignore comments
-        self.lexer.ignore(r"#.*")
-
-    def get_parser(self):
-        self.initialise_tokens()
+        # Ignore ignored tokens
+        for it in self.ignored_tokens:
+            self.lexer.ignore(it)
         return self.lexer.build()
 
 
