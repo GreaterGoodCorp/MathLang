@@ -23,6 +23,7 @@ token_pair = (
     # For flow controls
     # 1. If
     ("IF", r"if"),
+    ("ELSE", r"else"),
     ("ENDIF", r"endif"),
     # 2. While
     ("WHILE", r"while"),
