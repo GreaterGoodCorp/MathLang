@@ -48,9 +48,11 @@ token_pair = (
     ("RBRACKET", r"\]"),
     # 3. Semicolon
     ("SEMICOLON", r"\;"),
-    # 4. Newline
-    # Works for both Windows, Linux and MacOS
-    ("NEWLINE", r"(\r\n|\r|\n)+"),
+
+    # For comparison operators
+    ("LESS", r"<"),
+    ("MORE", r">"),
+    ("EQUALITY", r"=="),
 
     # For operators
     # 1. Plus
@@ -66,9 +68,8 @@ token_pair = (
     # 6. Equal
     ("EQUAL", r"="),
 
-    # For comparison operators
-    ("LESS", r"<"),
-    ("MORE", r">"),
+    # Whitespace (to be ignored later)
+    ("WHITESPACE", " "),
 )
 
 # This tuple is the master token list
@@ -76,8 +77,8 @@ tokens = (_[0] for _ in token_pair)
 
 # This tuple is the master ignored token list
 ignored_tokens = (
-    # Whitespaces
-    r" ",
+    # Newlines
+    r"\r\n|\r|\n",
     # Tabs
     r"\t",
     # Comments (# ....)
