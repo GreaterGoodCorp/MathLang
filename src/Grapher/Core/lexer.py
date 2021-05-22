@@ -46,7 +46,10 @@ token_pair = (
     # 2. Square brackets
     ("LBRACKET", r"\["),
     ("RBRACKET", r"\]"),
-    # 3. Semicolon
+    # 3. Curly braces
+    ("LCURLY", r"{"),
+    ("RCURLY", r"}"),
+    # 4. Semicolon
     ("SEMICOLON", r"\;"),
 
     # For comparison operators
