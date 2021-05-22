@@ -94,18 +94,26 @@ class Lexer:
         self.token_pair = token_pair
         self.tokens = tokens
         self.ignored_tokens = ignored_tokens
-        self.lexer = LexerGenerator()
+        self.lg = LexerGenerator()
+        self.lexer = self.get_lexer()
 
     def get_lexer(self):
         # Add accepted tokens
         for pair in self.token_pair:
-            self.lexer.add(pair[0], pair[1], re.IGNORECASE)
+            self.lg.add(pair[0], pair[1], re.IGNORECASE)
 
         # Ignore ignored tokens
         for it in self.ignored_tokens:
-            self.lexer.ignore(it)
-        return self.lexer.build()
+            self.lg.ignore(it)
+        return self.lg.build()
+
+    def lex(self, s):
+        for token in self.lexer.lex(s):
+            # Ignore whitespace
+            if token.name == "WHITESPACE":
+                continue
+            yield token
 
 
 def get_source_signature(source):
-    return "".join([_.value for _ in Lexer().get_lexer().lex(source)])
+    return "".join([_.value for _ in Lexer().lex(source)])
