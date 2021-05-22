@@ -8,7 +8,7 @@ sets = ("complexes", "reals", "integers", "naturals")
 # This tuple is the master token-pattern pairs list
 token_pair = (
     # For strings
-    ("STRING", r'(?<=").*(?=")'),
+    ("STRING", r'".*"'),
 
     # For reserved keywords
     # 1. Print
