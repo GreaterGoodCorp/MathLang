@@ -91,10 +91,6 @@ class Lexer:
         self.ignored_tokens = ignored_tokens
         self.lexer = LexerGenerator()
 
-    def add_tokens(self):
-        for pair in self.token_pair:
-            self.lexer.add(pair[0], pair[1], re.IGNORECASE)
-
     def get_lexer(self):
         # Add accepted tokens
         for pair in self.token_pair:
