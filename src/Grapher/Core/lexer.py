@@ -26,10 +26,8 @@ token_pair = (
     # 1. If
     ("IF", r"if"),
     ("ELSE", r"else"),
-    ("ENDIF", r"endif"),
     # 2. While
     ("WHILE", r"while"),
-    ("ENDWHILE", r"endwhile"),
 
     # For number sets
     ("SET", r"|".join(sets)),
