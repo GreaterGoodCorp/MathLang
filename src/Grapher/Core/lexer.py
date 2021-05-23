@@ -120,4 +120,4 @@ class Lexer:
 
 
 def get_source_signature(source):
-    return "".join([_.value for _ in Lexer().lex(source)])
+    return " ".join([f"{_.name}:{_.value}" for _ in Lexer().lex(source)])
