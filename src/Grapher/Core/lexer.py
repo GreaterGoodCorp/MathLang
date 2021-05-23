@@ -95,6 +95,8 @@ class Lexer:
         self.ignored_tokens = ignored_tokens
         self.lg = LexerGenerator()
         self.lexer = self.get_lexer()
+        if "WHITESPACE" in self.tokens:
+            self.tokens.remove("WHITESPACE")
 
     def get_lexer(self):
         # Add accepted tokens
