@@ -1,7 +1,7 @@
 # Input a, b, and c
-INPUT "Input a: " > a
-INPUT "Input b: " > b
-INPUT "Input c: " > c
+INPUT "Input a: " > a;
+INPUT "Input b: " > b;
+INPUT "Input c: " > c;
 
 # Define function f
 f = a*x^2+b*x+c;
