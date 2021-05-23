@@ -1,6 +1,5 @@
 from rply import ParserGenerator
 
-from Grapher.Core import Lexer
 from Grapher.Core.nodes import *
 
 
@@ -161,23 +160,3 @@ class Parser:
 
     def parse(self, tokens):
         return self.parser.parse(tokens)
-
-
-code = """
-# Conditional statements
-f = 0;
-if (f == 0) {
-   PRINT "f is 0";
-}
-
-# While loop
-while (f == 0) {
-   PRINT "f is indeed 0";
-}
-
-"""
-lexer = Lexer()
-tok = lexer.lex(code)
-parser = Parser(lexer.tokens)
-ast = parser.parse(tok)
-pass
