@@ -17,7 +17,9 @@ token_pair = (
     ("PLOT", r"plot"),
     # 3. Solve
     ("SOLVE", r"solve"),
-    # 4. In
+    # 4. Input
+    ("INPUT", r"input"),
+    # 5. In
     ("IN", r"in"),
 
     # For flow controls
