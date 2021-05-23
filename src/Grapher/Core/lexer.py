@@ -53,9 +53,11 @@ token_pair = (
     ("SEMICOLON", r"\;"),
 
     # For comparison operators
+    ("EQUALITY", r"=="),
+    ("LEQ", "<="),
+    ("GEQ", ">="),
     ("LESS", r"<"),
     ("MORE", r">"),
-    ("EQUALITY", r"=="),
 
     # For operators
     # 1. Plus
