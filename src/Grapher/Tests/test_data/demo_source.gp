@@ -1,5 +1,10 @@
+# Input a, b, and c
+INPUT "Input a: " > a
+INPUT "Input b: " > b
+INPUT "Input c: " > c
+
 # Define function f
-f = 5x^2+2x+1;
+f = a*x^2+b*x+c;
 
 # Get value of f(x) at x = 0 -> f(0)
 PRINT f(0);
