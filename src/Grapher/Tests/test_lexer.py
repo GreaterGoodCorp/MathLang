@@ -10,32 +10,32 @@ test_data_path = Path(__file__).parent.absolute() / "test_data"
 class TestLexer:
     @staticmethod
     @pytest.fixture()
-    def src1():
-        with open(test_data_path / "source1.gp") as fp:
+    def demo():
+        with open(test_data_path / "demo_source.gp") as fp:
             return fp.read()
 
     @staticmethod
     @pytest.fixture()
-    def src1sgn():
-        with open(test_data_path / "source1.signature") as fp:
+    def demo_sgn():
+        with open(test_data_path / "demo_source.signature") as fp:
             return fp.read()
 
     @staticmethod
     @pytest.fixture()
-    def src2():
-        with open(test_data_path / "source2.gp") as fp:
+    def conditional():
+        with open(test_data_path / "conditional_source.gp") as fp:
             return fp.read()
 
     @staticmethod
     @pytest.fixture()
-    def src2sgn():
-        with open(test_data_path / "source2.signature") as fp:
+    def conditional_sgn():
+        with open(test_data_path / "conditional_source.signature") as fp:
             return fp.read()
 
     @staticmethod
-    def test_simple_source(src1, src1sgn):
-        assert get_source_signature(src1) == src1sgn.strip("\n")
+    def test_demo_source(demo, demo_sgn):
+        assert get_source_signature(demo) == demo_sgn.strip("\n")
 
     @staticmethod
-    def test_conditional_source(src2, src2sgn):
-        assert get_source_signature(src2) == src2sgn.strip("\n")
+    def test_conditional_source(conditional, conditional_sgn):
+        assert get_source_signature(conditional) == conditional_sgn.strip("\n")
