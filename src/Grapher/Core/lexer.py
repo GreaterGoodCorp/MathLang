@@ -75,7 +75,7 @@ token_pair = (
 )
 
 # This tuple is the master token list
-tokens = (_[0] for _ in token_pair)
+tokens = [_[0] for _ in token_pair]
 
 # This tuple is the master ignored token list
 ignored_tokens = (
