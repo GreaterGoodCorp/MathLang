@@ -62,10 +62,7 @@ class Parser:
                 return Assignment(p[0].value, p[2], p[4].value)
 
         @self.pg.production("print_stmt : PRINT expr")
-        @self.pg.production("print_stmt : PRINT STRING")
         def print_statement(p):
-            if hasattr(p[1], "value"):
-                return Print(p[1].value)
             return Print(p[1])
 
         @self.pg.production("plot_stmt : PLOT expr")
@@ -105,13 +102,9 @@ class Parser:
         def while_stmt(p):
             return While(p[2], p[4])
 
-        @self.pg.production("type : INTEGER")
-        @self.pg.production("type : REAL")
-        def type_spec(p):
-            return p[0]
-
         @self.pg.production("expr : solve_expr")
         @self.pg.production("expr : math_expr")
+        @self.pg.production("expr : str_expr")
         def expression(p):
             if len(p) == 1:
                 return p[0]
@@ -179,6 +172,22 @@ class Parser:
             if len(p) == 1:
                 return p[0]
             return p[1]
+
+        @self.pg.production("str_expr : STRING")
+        @self.pg.production("str_expr : str_expr PLUS STRING")
+        @self.pg.production("str_expr : str_expr COMMA STRING")
+        def string_expression(p):
+            if len(p) == 1:
+                return p[0].value
+            elif p[1].type == "PLUS":
+                return p[0].value + p[2].value
+            else:
+                return p[0].value + " " + p[2].value
+
+        @self.pg.production("type : INTEGER")
+        @self.pg.production("type : REAL")
+        def type_spec(p):
+            return p[0]
 
         @self.pg.error
         def error_handle(token):
