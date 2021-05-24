@@ -175,14 +175,14 @@ class Parser:
 
         @self.pg.production("str_expr : STRING")
         @self.pg.production("str_expr : str_expr PLUS STRING")
-        @self.pg.production("str_expr : str_expr COMMA STRING")
+        @self.pg.production("str_expr : str_expr COMMA expr")
         def string_expression(p):
             if len(p) == 1:
                 return p[0].value
-            elif p[1].type == "PLUS":
+            elif p[1].name == "PLUS":
                 return p[0].value + p[2].value
             else:
-                return p[0].value + " " + p[2].value
+                return StringAdd(p[0], p[2], True)
 
         @self.pg.production("type : INTEGER")
         @self.pg.production("type : REAL")
