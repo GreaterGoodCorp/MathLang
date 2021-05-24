@@ -235,6 +235,24 @@ class BinaryOps(AST):
         }
 
 
+class StringAdd(AST):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def codify(self) -> str:
+        pass
+
+    def serialise(self):
+        return {
+            "type": "StringAdd",
+            "params": {
+                "left": self.left,
+                "op": self.op,
+                "right": self.right
+            }
+        }
+
 class Comparison(AST):
     def __init__(self, left, op, right):
         self.left = left
