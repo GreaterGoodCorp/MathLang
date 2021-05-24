@@ -50,10 +50,16 @@ class Parser:
             return p[0]
 
         @self.pg.production("assignment : ID EQUAL expr")
+        @self.pg.production("assignment : ID EQUAL expr AS type")
         def assignment(p):
-            if p[0].value not in self.symbol_table:
-                self.symbol_table.append(p[0].value)
-            return Assignment(p[0].value, p[2])
+            if len(p) == 3:
+                if p[0].value not in self.symbol_table:
+                    self.symbol_table.append(p[0].value)
+                return Assignment(p[0].value, p[2], None)
+            else:
+                if p[0].value not in self.symbol_table:
+                    self.symbol_table.append(p[0].value)
+                return Assignment(p[0].value, p[2], p[4].value)
 
         @self.pg.production("print_stmt : PRINT expr")
         @self.pg.production("print_stmt : PRINT STRING")
