@@ -18,6 +18,10 @@ def get_symbol(symbol):
     return f"_{len(global_symbol_match) - 1}"
 
 
+def lookup_type(t):
+    return {"INTEGER": "int", "REAL": "float"}[t]
+
+
 class AST(metaclass=abc.ABCMeta):
     """Parent class of all AST nodes."""
 
