@@ -24,12 +24,10 @@ class AST(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def codify(self) -> str:
         """Turn this node into Python code."""
-        pass
 
     @abc.abstractmethod
     def serialise(self) -> dict:
         """Serialise this node in to JSON object."""
-        pass
 
     def __eq__(self, other: AST):
         if not isinstance(other, AST):
