@@ -16,25 +16,25 @@ class TestParser:
     @staticmethod
     @fixture()
     def demo():
-        with open(test_data_path / "demo_source.gp") as fp:
+        with open(test_data_path / "simple_demo.gp") as fp:
             return fp.read()
 
     @staticmethod
     @fixture()
     def demo_ast():
-        with open(test_data_path / "demo_source.ast") as fp:
+        with open(test_data_path / "simple_demo.ast") as fp:
             return fp.read()
 
     @staticmethod
     @fixture()
     def conditional():
-        with open(test_data_path / "conditional_source.gp") as fp:
+        with open(test_data_path / "simple_conditional.gp") as fp:
             return fp.read()
 
     @staticmethod
     @fixture()
     def conditional_ast():
-        with open(test_data_path / "conditional_source.ast") as fp:
+        with open(test_data_path / "simple_conditional.ast") as fp:
             return fp.read()
 
     @staticmethod
