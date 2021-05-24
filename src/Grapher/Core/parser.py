@@ -144,7 +144,7 @@ class Parser:
                     if p[0].value not in self.symbol_table:
                         raise UndefinedName(p[0])
                 return Evaluation(p[0].value, p[2])
-            elif type(p[1]) == str:
+            elif type(p[1].value) == str:
                 return BinaryOps(p[0], p[1].value, p[2])
             else:
                 return p[1]
