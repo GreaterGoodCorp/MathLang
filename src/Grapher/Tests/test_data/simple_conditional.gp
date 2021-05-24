@@ -5,6 +5,7 @@ if (f == 0) {
 }
 
 # While loop
-while (f == 0) {
-   PRINT "f is indeed 0";
+while (f < 10) {
+   PRINT "f is indeed smaller than 10";
+   f = f + 1;
 }
