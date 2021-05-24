@@ -92,6 +92,8 @@ class Evaluation(AST):
     def codify(self):
         while type(self.expr) != str and self.expr is not None:
             self.expr = self.expr.codify()
+        if self.expr in global_symbol_match:
+            self.expr = get_symbol(self.expr)
         d = {"x": sympify(self.expr)}
         return f"{get_symbol(self.name)}.subs({str(d)})"
 
@@ -106,6 +108,8 @@ class Print(AST):
     def codify(self):
         while type(self.expr) != str and self.expr is not None:
             self.expr = self.expr.codify()
+        if self.expr in global_symbol_match:
+            self.expr = get_symbol(self.expr)
         return f"_p({self.expr});"
 
     def serialise(self):
