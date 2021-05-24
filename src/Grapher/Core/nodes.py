@@ -45,7 +45,7 @@ class Program(AST):
 
     @staticmethod
     def init_code():
-        return f"import sympy as _sp;_p=print;_i=input;{get_symbol('x')}=_sp.Symbol(\"x\");"
+        return f"from sympy import *;_p=print;_i=input;{get_symbol('x')}=Symbol(\"x\");"
 
     def codify(self):
         code = Program.init_code()
