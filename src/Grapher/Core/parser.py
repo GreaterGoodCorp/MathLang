@@ -16,9 +16,6 @@ class Parser:
         # Implicit x
         self.symbol_table.append("x")
 
-        # Temporary value holders
-        self.symbol_table.append("_")
-
     def make_production(self):
         @self.pg.production("prog : stmts")
         def program(p):
