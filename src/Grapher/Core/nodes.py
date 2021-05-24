@@ -49,6 +49,12 @@ class Evaluation:
         self.name = name
         self.expr = expr
 
+    def codify(self):
+        while type(self.expr) != str:
+            self.expr = self.expr.codify()
+        d = {"x": sympify(self.expr)}
+        return f"{get_symbol(self.name)}.subs({str(d)})"
+
 
 class Print:
     def __init__(self, expr):
