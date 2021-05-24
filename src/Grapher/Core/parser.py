@@ -57,6 +57,8 @@ class Parser:
         @self.pg.production("print_stmt : PRINT expr")
         @self.pg.production("print_stmt : PRINT STRING")
         def print_statement(p):
+            if hasattr(p[1], "value"):
+                return Print(p[1].value)
             return Print(p[1])
 
         @self.pg.production("plot_stmt : PLOT expr")
