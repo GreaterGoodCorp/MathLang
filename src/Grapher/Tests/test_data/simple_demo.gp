@@ -10,7 +10,7 @@ f = a*x^2+b*x+c;
 PRINT f(0);
 
 # Find real roots of f
-roots = SOLVE f IN REALS;
+roots = SOLVE f AS REAL;
 
 # Plot function f
 PLOT f;
