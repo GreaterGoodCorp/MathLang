@@ -1,5 +1,6 @@
 from rply import ParserGenerator
 
+from Grapher.Core import Lexer
 from Grapher.Core.nodes import *
 
 
@@ -162,3 +163,11 @@ class Parser:
 
     def parse(self, tokens):
         return self.parser.parse(tokens)
+
+
+def generate_ast(source):
+    lexer = Lexer()
+    parser = Parser(lexer.tokens)
+    ast = parser.parse(lexer.lex(source))
+    populate_matching_table(parser.symbol_table)
+    return ast
