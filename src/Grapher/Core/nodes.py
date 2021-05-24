@@ -57,9 +57,10 @@ class Program(AST):
 
 
 class Assignment(AST):
-    def __init__(self, name, expr):
+    def __init__(self, name, expr, cast):
         self.name = name
         self.expr = expr
+        self.cast = cast
 
     def codify(self):
         while type(self.expr) != str and self.expr is not None:
@@ -67,7 +68,7 @@ class Assignment(AST):
         return f"{get_symbol(self.name)}={self.expr};"
 
     def serialise(self):
-        return {"type": "Assignment", "params": {"name": self.name, "expr": self.expr}}
+        return {"type": "Assignment", "params": {"name": self.name, "expr": self.expr, "cast": self.cast}}
 
 
 class Evaluation(AST):
