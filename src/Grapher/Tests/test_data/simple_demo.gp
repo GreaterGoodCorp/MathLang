@@ -12,5 +12,8 @@ PRINT f(0);
 # Find real roots of f
 roots = SOLVE f AS REAL;
 
+# Print real roots of f
+PRINT "Real roots of f are", roots;
+
 # Plot function f
 PLOT f;
