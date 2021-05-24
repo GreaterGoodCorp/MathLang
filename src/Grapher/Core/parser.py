@@ -125,7 +125,7 @@ class Parser:
             return Comparison(p[0], p[1].value, p[2])
 
         @self.pg.production("solve_expr : SOLVE math_expr")
-        @self.pg.production("solve_expr : SOLVE math_expr IN SET")
+        @self.pg.production("solve_expr : SOLVE math_expr AS type")
         def solve_statement(p):
             if len(p) == 2:
                 return Solve(p[1], None)
