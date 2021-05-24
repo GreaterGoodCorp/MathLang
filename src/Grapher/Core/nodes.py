@@ -94,7 +94,7 @@ class Evaluation(AST):
             self.expr = self.expr.codify()
         if self.expr in global_symbol_match:
             self.expr = get_symbol(self.expr)
-        d = {"x": sympify(self.expr)}
+        d = {"x": str(sympify(self.expr)).replace(" ", "")}
         return f"{get_symbol(self.name)}.subs({str(d)})"
 
     def serialise(self):
@@ -258,7 +258,7 @@ class BinaryOps(AST):
         if self.right in global_symbol_match:
             self.right = get_symbol(self.right)
         self.op = "**" if self.op == "^" else self.op
-        return str(sympify(f"({self.left}){self.op}({self.right})"))
+        return str(sympify(f"({self.left}){self.op}({self.right})")).replace(" ", "")
 
     def serialise(self):
         return {
