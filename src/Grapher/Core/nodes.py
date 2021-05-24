@@ -69,6 +69,8 @@ class Assignment(AST):
     def codify(self):
         while type(self.expr) != str and self.expr is not None:
             self.expr = self.expr.codify()
+        if self.cast is not None:
+            self.expr = f"{lookup_type(self.cast)}({self.expr})"
         return f"{get_symbol(self.name)}={self.expr};"
 
     def serialise(self):
@@ -135,8 +137,12 @@ class Input(AST):
 
     def codify(self):
         if self.prompt is not None:
-            return f"{get_symbol(self.name)}=_i({self.prompt});"
-        return f"{get_symbol(self.name)}=_i();"
+            input_call = f"_i({self.prompt})"
+        else:
+            input_call = "_i()"
+        if self.cast is not None:
+            input_call = f"{lookup_type(self.cast)}({input_call})"
+        return f"{get_symbol(self.name)}={input_call};"
 
     def serialise(self):
         return {"type": "Input", "params": {"name": self.name, "prompt": self.prompt, "cast": self.cast}}
