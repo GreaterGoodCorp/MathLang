@@ -46,6 +46,8 @@ token_pair = (
     ("RCURLY", r"}"),
     # 3. Semicolon
     ("SEMICOLON", r"\;"),
+    # 4. Comma
+    ("COMMA", r","),
 
     # For comparison operators
     ("EQUALITY", r"=="),
