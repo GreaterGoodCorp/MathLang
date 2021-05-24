@@ -67,14 +67,26 @@ class Parser:
             return Plot(p[1], None)
 
         @self.pg.production("input_stmt : INPUT MORE ID")
+        @self.pg.production("input_stmt : INPUT MORE ID AS type")
         @self.pg.production("input_stmt : INPUT STRING MORE ID")
+        @self.pg.production("input_stmt : INPUT STRING MORE ID AS type")
         def input_statement(p):
             if len(p) == 3:
                 if p[2].value not in self.symbol_table:
                     self.symbol_table.append(p[2])
-                return Input(p[2].value, None)
-            self.symbol_table.append(p[3].value)
-            return Input(p[3].value, p[1].value)
+                return Input(p[2].value, None, None)
+            elif len(p) == 4:
+                if p[3].value not in self.symbol_table:
+                    self.symbol_table.append(p[3].value)
+                return Input(p[3].value, p[1].value, None)
+            elif len(p) == 5:
+                if p[2].value not in self.symbol_table:
+                    self.symbol_table.append(p[2])
+                return Input(p[2].value, None, p[4].value)
+            else:
+                if p[3].value not in self.symbol_table:
+                    self.symbol_table.append(p[3].value)
+                return Input(p[3].value, p[1].value, p[5].value)
 
         @self.pg.production("if_stmt : IF LPAREN bool_expr RPAREN block")
         @self.pg.production("if_stmt : IF LPAREN bool_expr RPAREN block ELSE block")
@@ -86,6 +98,11 @@ class Parser:
         @self.pg.production("while_stmt : WHILE LPAREN bool_expr RPAREN block")
         def while_stmt(p):
             return While(p[2], p[4])
+
+        @self.pg.production("type : INTEGER")
+        @self.pg.production("type : REAL")
+        def type_spec(p):
+            return p[0]
 
         @self.pg.production("expr : solve_expr")
         @self.pg.production("expr : math_expr")
