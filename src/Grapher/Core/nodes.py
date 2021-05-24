@@ -45,7 +45,13 @@ class Program(AST):
 
     @staticmethod
     def init_code():
-        return f"from sympy import *;_p=print;_i=input;{get_symbol('x')}=Symbol(\"x\");"
+        return f"import sympy as _s;_p=print;_i=input;{get_symbol('x')}=_s.Symbol(\"x\");"
+
+    @staticmethod
+    def finalise_code(code):
+        del_str = "\ndel _s,_p,_i,"
+        del_str += ",".join([get_symbol(i) for i in global_symbol_match]) + ";"
+        return code + del_str
 
     def codify(self):
         code = Program.init_code()
