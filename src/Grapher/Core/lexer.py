@@ -21,6 +21,12 @@ token_pair = (
     ("INPUT", r"input"),
     # 5. In
     ("IN", r"in"),
+    # 6. As
+    ("AS", r"as"),
+    # 7. Real
+    ("REAL", r"REAL"),
+    # 8. Integer
+    ("INTEGER", r"INTEGER"),
 
     # For flow controls
     # 1. If
