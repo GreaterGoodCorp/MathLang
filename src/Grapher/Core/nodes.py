@@ -49,9 +49,9 @@ class Program(AST):
         code = Program.init_code()
         for stmt in self.stmts:
             if isinstance(stmt, (If, While)):
-                code += "\n" + stmt.codify()
+                code += "\n" + str(stmt.codify())
                 continue
-            code += stmt.codify()
+            code += str(stmt.codify())
         return code
 
     def serialise(self):
@@ -64,7 +64,7 @@ class Assignment(AST):
         self.expr = expr
 
     def codify(self):
-        while type(self.expr) != str:
+        while type(self.expr) != str and self.expr is not None:
             self.expr = self.expr.codify()
         return f"{get_symbol(self.name)}={self.expr};"
 
@@ -78,7 +78,7 @@ class Evaluation(AST):
         self.expr = expr
 
     def codify(self):
-        while type(self.expr) != str:
+        while type(self.expr) != str and self.expr is not None:
             self.expr = self.expr.codify()
         d = {"x": sympify(self.expr)}
         return f"{get_symbol(self.name)}.subs({str(d)})"
@@ -92,7 +92,7 @@ class Print(AST):
         self.expr = expr
 
     def codify(self):
-        while type(self.expr) != str:
+        while type(self.expr) != str and self.expr is not None:
             self.expr = self.expr.codify()
         return f"_p({self.expr});"
 
@@ -146,17 +146,17 @@ class If(AST):
         code = f"if {self.condition.codify()}:\n\t"
         for stmt in self.true_block:
             if isinstance(stmt, (If, While)):
-                code += stmt.codify()
+                code += str(stmt.codify())
                 continue
-            code += stmt.codify()
+            code += str(stmt.codify())
         if self.false_block is None:
             return code
         code += "\nelse:\n\t"
         for stmt in self.false_block:
             if isinstance(stmt, (If, While)):
-                code += stmt.codify()
+                code += str(stmt.codify())
                 continue
-            code += stmt.codify()
+            code += str(stmt.codify())
         return code
 
     def serialise(self):
@@ -179,9 +179,9 @@ class While(AST):
         code = f"if {self.condition.codify()}:\n\t"
         for stmt in self.code_block:
             if isinstance(stmt, (If, While)):
-                code += stmt.codify()
+                code += str(stmt.codify())
                 continue
-            code += stmt.codify()
+            code += str(stmt.codify())
         return code
 
     def serialise(self):
@@ -201,9 +201,9 @@ class BinaryOps(AST):
         self.right = right
 
     def codify(self):
-        while type(self.left) != str:
+        while type(self.left) != str and self.left is not None:
             self.left = self.left.codify()
-        while type(self.right) != str:
+        while type(self.right) != str and self.right is not None:
             self.right = self.right.codify()
         if self.left in global_symbol_match:
             self.left = get_symbol(self.left)
@@ -230,9 +230,9 @@ class Comparison(AST):
         self.right = right
 
     def codify(self):
-        while type(self.left) != str:
+        while type(self.left) != str and self.left is not None:
             self.left = self.left.codify()
-        while type(self.right) != str:
+        while type(self.right) != str and self.right is not None:
             self.right = self.right.codify()
         if self.left in global_symbol_match:
             self.left = get_symbol(self.left)
