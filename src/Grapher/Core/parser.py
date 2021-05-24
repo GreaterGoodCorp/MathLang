@@ -167,7 +167,7 @@ class Parser:
         @self.pg.production("block : LCURLY stmts RCURLY")
         def block(p):
             if len(p) == 1:
-                return p[0]
+                return [p[0]]
             return p[1]
 
         @self.pg.production("str_expr : STRING")
