@@ -128,7 +128,9 @@ class Input(AST):
         self.prompt = prompt
 
     def codify(self):
-        return f"{get_symbol(self.name)}=_i({self.prompt});"
+        if self.prompt is not None:
+            return f"{get_symbol(self.name)}=_i({self.prompt});"
+        return f"{get_symbol(self.name)}=_i();"
 
     def serialise(self):
         return {"type": "Input", "params": {"name": self.name, "prompt": self.prompt}}
