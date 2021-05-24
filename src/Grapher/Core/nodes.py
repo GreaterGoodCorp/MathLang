@@ -1,3 +1,20 @@
+from sympy import sympify
+
+global_symbol_match = list()
+
+
+def populate_matching_table(table):
+    global global_symbol_match
+    global_symbol_match = table
+
+
+def get_symbol(symbol):
+    if symbol in global_symbol_match:
+        return f"_{global_symbol_match.index(symbol)}"
+    global_symbol_match.append(symbol)
+    return f"_{len(global_symbol_match) - 1}"
+
+
 class Program:
     def __init__(self, stmts):
         self.stmts = stmts
