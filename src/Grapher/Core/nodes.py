@@ -4,6 +4,7 @@ import abc
 from sympy import sympify
 
 global_symbol_match = list()
+current_indent = 0
 
 
 def populate_matching_table(table):
@@ -57,10 +58,10 @@ class Program(AST):
         code = Program.init_code()
         for stmt in self.stmts:
             if isinstance(stmt, (If, While)):
-                code += "\n" + str(stmt.codify())
+                code += str(stmt.codify())
                 continue
             code += str(stmt.codify())
-        return code
+        return Program.finalise_code(code.strip("\n\t"))
 
     def serialise(self):
         return {"type": "Program", "params": {"stmts": self.stmts}}
@@ -161,21 +162,37 @@ class If(AST):
         self.false_block = false_block
 
     def codify(self):
-        code = f"if {self.condition.codify()}:\n\t"
+        global current_indent
+        flag = True
+        newline = "\n" + "\t" * (current_indent + 1)
+        code = newline[:-1] + f"if {self.condition.codify()}:"
         for stmt in self.true_block:
             if isinstance(stmt, (If, While)):
-                code += "\n" + str(stmt.codify())
+                current_indent += 1
+                code += str(stmt.codify())
+                current_indent -= 1
+                flag = False
                 continue
+            elif flag:
+                code += newline
+                flag = False
             code += str(stmt.codify())
         if self.false_block is None:
-            return code
-        code += "\nelse:\n\t"
+            return code + newline[:-1]
+        flag = True
+        code += newline[:-1] + "else:"
         for stmt in self.false_block:
             if isinstance(stmt, (If, While)):
-                code += "\n" + str(stmt.codify())
+                current_indent += 1
+                code += str(stmt.codify())
+                current_indent -= 1
+                flag = False
                 continue
+            elif flag:
+                code += newline
+                flag = False
             code += str(stmt.codify())
-        return code
+        return code + newline[:-1]
 
     def serialise(self):
         return {
@@ -194,11 +211,20 @@ class While(AST):
         self.code_block = code_block
 
     def codify(self):
-        code = f"if {self.condition.codify()}:\n\t"
+        global current_indent
+        newline = "\n" + "\t" * (current_indent + 1)
+        flag = True
+        code = newline[:-1] + f"while {self.condition.codify()}:" + newline
         for stmt in self.code_block:
             if isinstance(stmt, (If, While)):
-                code += "\n" + str(stmt.codify())
+                current_indent += 1
+                code += str(stmt.codify())
+                current_indent -= 1
+                flag = False
                 continue
+            elif flag:
+                code += newline
+                flag = False
             code += str(stmt.codify())
         return code
 
