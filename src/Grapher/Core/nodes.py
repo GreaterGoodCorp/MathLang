@@ -21,7 +21,7 @@ class Program:
 
     @staticmethod
     def init_code():
-        return "import sympy as _sp;_p=print;_i=input;x=_sp.Symbol(\"x\");"
+        return f"import sympy as _sp;_p=print;_i=input;{get_symbol('x')}=_sp.Symbol(\"x\");"
 
     def translate(self):
         code = Program.init_code()
