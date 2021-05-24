@@ -1,4 +1,5 @@
 from pathlib import Path
+from json import loads, dumps
 
 from pytest import fixture
 
@@ -23,7 +24,7 @@ class TestParser:
     @fixture()
     def demo_ast():
         with open(test_data_path / "simple_demo.ast") as fp:
-            return fp.read()
+            return dumps(loads(fp.read()))
 
     @staticmethod
     @fixture()
@@ -35,7 +36,7 @@ class TestParser:
     @fixture()
     def conditional_ast():
         with open(test_data_path / "simple_conditional.ast") as fp:
-            return fp.read()
+            return dumps(loads(fp.read()))
 
     @staticmethod
     def test_serialisation_and_deserialisation(quick_src):
