@@ -1,5 +1,6 @@
 from __future__ import annotations
 import abc
+import re
 
 from sympy import sympify
 
@@ -57,6 +58,7 @@ class Program(AST):
             del_str = "\n"
         del_str += "del _s,_p,_i,"
         del_str += ",".join([get_symbol(i) for i in global_symbol_match]) + ";"
+        code = re.sub(r"(\n\t*){2}", r"\1", code)
         return code + del_str
 
     def codify(self):
@@ -221,9 +223,9 @@ class While(AST):
 
     def codify(self):
         global current_indent
-        newline = "\n" + "\t" * (current_indent + 1)
         flag = True
-        code = newline[:-1] + f"while {self.condition.codify()}:" + newline
+        newline = "\n" + "\t" * (current_indent + 1)
+        code = newline[:-1] + f"if {self.condition.codify()}:"
         for stmt in self.code_block:
             if isinstance(stmt, (If, While)):
                 current_indent += 1
