@@ -123,9 +123,10 @@ class Solve(AST):
 
 
 class Input(AST):
-    def __init__(self, name, prompt):
+    def __init__(self, name, prompt, cast):
         self.name = name
         self.prompt = prompt
+        self.cast = cast
 
     def codify(self):
         if self.prompt is not None:
@@ -133,7 +134,7 @@ class Input(AST):
         return f"{get_symbol(self.name)}=_i();"
 
     def serialise(self):
-        return {"type": "Input", "params": {"name": self.name, "prompt": self.prompt}}
+        return {"type": "Input", "params": {"name": self.name, "prompt": self.prompt, "cast": self.cast}}
 
 
 class If(AST):
