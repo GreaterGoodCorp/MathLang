@@ -2,9 +2,6 @@ import re
 
 from rply import LexerGenerator
 
-# Number sets
-sets = ("complexes", "reals", "integers", "naturals")
-
 # This tuple is the master token-pattern pairs list
 token_pair = (
     # For strings
@@ -19,13 +16,11 @@ token_pair = (
     ("SOLVE", r"solve"),
     # 4. Input
     ("INPUT", r"input"),
-    # 5. In
-    ("IN", r"in"),
-    # 6. As
+    # 5. As
     ("AS", r"as"),
-    # 7. Real
+    # 6. Real
     ("REAL", r"REAL"),
-    # 8. Integer
+    # 7. Integer
     ("INTEGER", r"INTEGER"),
 
     # For flow controls
@@ -34,9 +29,6 @@ token_pair = (
     ("ELSE", r"else"),
     # 2. While
     ("WHILE", r"while"),
-
-    # For number sets
-    ("SET", r"|".join(sets)),
 
     # For identifiers
     # At most 64 characters
