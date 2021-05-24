@@ -1,3 +1,6 @@
+from __future__ import annotations
+import abc
+
 from sympy import sympify
 
 global_symbol_match = list()
@@ -15,7 +18,26 @@ def get_symbol(symbol):
     return f"_{len(global_symbol_match) - 1}"
 
 
-class Program:
+class AST(metaclass=abc.ABCMeta):
+    """Parent class of all AST nodes."""
+
+    @abc.abstractmethod
+    def codify(self) -> str:
+        """Turn this node into Python code."""
+        pass
+
+    @abc.abstractmethod
+    def serialise(self) -> dict:
+        """Serialise this node in to JSON object."""
+        pass
+
+    def __eq__(self, other: AST):
+        if not isinstance(other, AST):
+            raise TypeError("Must be compared with another AST")
+        return self.codify() == other.codify()
+
+
+class Program(AST):
     def __init__(self, stmts):
         self.stmts = stmts
 
@@ -23,17 +45,20 @@ class Program:
     def init_code():
         return f"import sympy as _sp;_p=print;_i=input;{get_symbol('x')}=_sp.Symbol(\"x\");"
 
-    def translate(self):
+    def codify(self):
         code = Program.init_code()
         for stmt in self.stmts:
             if isinstance(stmt, (If, While)):
-                code += "\n" + stmt.translate()
+                code += "\n" + stmt.codify()
                 continue
             code += stmt.codify()
         return code
 
+    def serialise(self):
+        return {"type": "Program", "params": {"stmts": self.stmts}}
 
-class Assignment:
+
+class Assignment(AST):
     def __init__(self, name, expr):
         self.name = name
         self.expr = expr
@@ -43,8 +68,11 @@ class Assignment:
             self.expr = self.expr.codify()
         return f"{get_symbol(self.name)}={self.expr};"
 
+    def serialise(self):
+        return {"type": "Assignment", "params": {"name": self.name, "expr": self.expr}}
 
-class Evaluation:
+
+class Evaluation(AST):
     def __init__(self, name, expr):
         self.name = name
         self.expr = expr
@@ -55,8 +83,11 @@ class Evaluation:
         d = {"x": sympify(self.expr)}
         return f"{get_symbol(self.name)}.subs({str(d)})"
 
+    def serialise(self):
+        return {"type": "Evaluation", "params": {"name": self.name, "expr": self.expr}}
 
-class Print:
+
+class Print(AST):
     def __init__(self, expr):
         self.expr = expr
 
@@ -65,20 +96,35 @@ class Print:
             self.expr = self.expr.codify()
         return f"_p({self.expr});"
 
+    def serialise(self):
+        return {"type": "Print", "params": {"expr": self.expr}}
 
-class Plot:
+
+class Plot(AST):
     def __init__(self, expr, domain):
         self.expr = expr
         self.domain = domain
 
+    def codify(self):
+        pass
 
-class Solve:
+    def serialise(self):
+        return {"type": "Plot", "params": {"expr": self.expr, "domain": self.domain}}
+
+
+class Solve(AST):
     def __init__(self, expr, domain):
         self.expr = expr
         self.domain = domain
 
+    def codify(self):
+        pass
 
-class Input:
+    def serialise(self):
+        return {"type": "Solve", "params": {"expr": self.expr, "domain": self.domain}}
+
+
+class Input(AST):
     def __init__(self, name, prompt):
         self.name = name
         self.prompt = prompt
@@ -86,18 +132,21 @@ class Input:
     def codify(self):
         return f"{get_symbol(self.name)}=_i({self.prompt});"
 
+    def serialise(self):
+        return {"type": "Input", "params": {"name": self.name, "prompt": self.prompt}}
 
-class If:
+
+class If(AST):
     def __init__(self, condition, true_block, false_block):
         self.condition = condition
         self.true_block = true_block
         self.false_block = false_block
 
-    def translate(self):
+    def codify(self):
         code = f"if {self.condition.codify()}:\n\t"
         for stmt in self.true_block:
             if isinstance(stmt, (If, While)):
-                code += stmt.translate()
+                code += stmt.codify()
                 continue
             code += stmt.codify()
         if self.false_block is None:
@@ -105,28 +154,47 @@ class If:
         code += "\nelse:\n\t"
         for stmt in self.false_block:
             if isinstance(stmt, (If, While)):
-                code += stmt.translate()
+                code += stmt.codify()
                 continue
             code += stmt.codify()
         return code
 
+    def serialise(self):
+        return {
+            "type": "If",
+            "params": {
+                "condition": self.condition,
+                "true_block": self.true_block,
+                "false_block": self.false_block
+            }
+        }
 
-class While:
+
+class While(AST):
     def __init__(self, condition, code_block):
         self.condition = condition
         self.code_block = code_block
 
-    def translate(self):
+    def codify(self):
         code = f"if {self.condition.codify()}:\n\t"
         for stmt in self.code_block:
             if isinstance(stmt, (If, While)):
-                code += stmt.translate()
+                code += stmt.codify()
                 continue
             code += stmt.codify()
         return code
 
+    def serialise(self):
+        return {
+            "type": "While",
+            "params": {
+                "condition": self.condition,
+                "code_block": self.code_block
+            }
+        }
 
-class BinaryOps:
+
+class BinaryOps(AST):
     def __init__(self, left, op, right):
         self.left = left
         self.op = op
@@ -144,8 +212,18 @@ class BinaryOps:
         self.op = "**" if self.op == "^" else self.op
         return str(sympify(f"({self.left}){self.op}({self.right})"))
 
+    def serialise(self):
+        return {
+            "type": "BinaryOps",
+            "params": {
+                "left": self.left,
+                "op": self.op,
+                "right": self.right
+            }
+        }
 
-class Comparison:
+
+class Comparison(AST):
     def __init__(self, left, op, right):
         self.left = left
         self.op = op
@@ -161,6 +239,16 @@ class Comparison:
         if self.right in global_symbol_match:
             self.right = get_symbol(self.right)
         return f"{self.left}{self.op}{self.right}"
+
+    def serialise(self):
+        return {
+            "type": "Comparison",
+            "params": {
+                "left": self.left,
+                "op": self.op,
+                "right": self.right
+            }
+        }
 
 
 class InvalidToken(BaseException):
@@ -184,4 +272,4 @@ class UndefinedName(BaseException):
 
 
 def generate_python_code(ast):
-    return ast.translate()
+    return ast.codify()
