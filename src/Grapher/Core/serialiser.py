@@ -23,7 +23,7 @@ def json_decode_hook(o):
         "Print",
         "Program",
         "Solve",
-        "StringAdd"
+        "StringAdd",
         "While",
     ]
     t = o.get("type", None)
