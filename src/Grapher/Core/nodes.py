@@ -49,8 +49,13 @@ class Program(AST):
         return f"import sympy as _s;_p=print;_i=input;{get_symbol('x')}=_s.Symbol(\"x\");"
 
     @staticmethod
-    def finalise_code(code):
-        del_str = "\ndel _s,_p,_i,"
+    def finalise_code(code: str):
+        loc = -code[::-1].find("\n") - 1
+        if code.find("\t", loc) == -1:
+            del_str = ""
+        else:
+            del_str = "\n"
+        del_str += "del _s,_p,_i,"
         del_str += ",".join([get_symbol(i) for i in global_symbol_match]) + ";"
         return code + del_str
 
