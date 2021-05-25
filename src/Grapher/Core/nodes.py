@@ -2,7 +2,7 @@ from __future__ import annotations
 import abc
 import re
 
-from sympy import sympify
+import sympy
 
 global_symbol_match = list()
 current_indent = 0
@@ -102,7 +102,7 @@ class Evaluation(AST):
             self.expr = self.expr.codify()
         if self.expr in global_symbol_match:
             self.expr = get_symbol(self.expr)
-        d = {"x": str(sympify(self.expr)).replace(" ", "")}
+        d = {"x": str(sympy.sympify(self.expr)).replace(" ", "")}
         return f"{get_symbol(self.name)}.subs({str(d)})"
 
     def serialise(self):
@@ -141,7 +141,13 @@ class Solve(AST):
         self.domain = domain
 
     def codify(self):
-        pass
+        domain_map = {
+            "INTEGER": "_s.Integers",
+            "REAL": "_s.Reals",
+        }
+        if self.expr in global_symbol_match:
+            self.expr = get_symbol(self.expr)
+        return f"list(_s.solveset({self.expr},domains={domain_map.get(self.expr, '_s.Reals')}))"
 
     def serialise(self):
         return {"type": "Solve", "params": {"expr": self.expr, "domain": self.domain}}
@@ -265,7 +271,7 @@ class BinaryOps(AST):
         if self.right in global_symbol_match:
             self.right = get_symbol(self.right)
         self.op = "**" if self.op == "^" else self.op
-        return str(sympify(f"({self.left}){self.op}({self.right})")).replace(" ", "")
+        return str(sympy.sympify(f"({self.left}){self.op}({self.right})")).replace(" ", "")
 
     def serialise(self):
         return {
