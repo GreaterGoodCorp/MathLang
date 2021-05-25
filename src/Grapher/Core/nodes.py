@@ -76,20 +76,17 @@ class Program(AST):
 
 
 class Assignment(AST):
-    def __init__(self, name, expr, cast):
+    def __init__(self, name, expr):
         self.name = name
         self.expr = expr
-        self.cast = cast
 
     def codify(self):
         while type(self.expr) != str and self.expr is not None:
             self.expr = self.expr.codify()
-        if self.cast is not None:
-            self.expr = f"{lookup_type(self.cast)}({self.expr})"
         return f"{get_symbol(self.name)}={self.expr};"
 
     def serialise(self):
-        return {"type": "Assignment", "params": {"name": self.name, "expr": self.expr, "cast": self.cast}}
+        return {"type": "Assignment", "params": {"name": self.name, "expr": self.expr}}
 
 
 class Evaluation(AST):
