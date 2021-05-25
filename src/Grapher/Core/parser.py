@@ -87,19 +87,19 @@ class Parser:
         @self.pg.production("expr : bool_expr")
         @self.pg.production("expr : solve_expr")
         @self.pg.production("expr : math_expr")
-        @self.pg.production("expr : expr AS type")
+        @self.pg.production("expr : expr AS num_type")
         def expression(p):
             if len(p) == 1:
                 return p[0]
             else:
                 return Cast(p[0], p[2])
 
-        @self.pg.production("str_expr : STRING_LITERAL")
-        @self.pg.production("str_expr : str_expr PLUS STRING_LITERAL")
-        @self.pg.production("str_expr : str_expr COMMA STRING_LITERAL")
+        @self.pg.production("str_expr : str_term")
+        @self.pg.production("str_expr : str_expr PLUS str_term")
+        @self.pg.production("str_expr : str_expr COMMA str_term")
         def string_expression(p):
             if len(p) == 1:
-                return p[0].value
+                return p[0]
             elif p[1].name == "PLUS":
                 return StringAdd(p[0], p[2], False)
             else:
