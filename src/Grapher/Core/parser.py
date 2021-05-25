@@ -22,11 +22,10 @@ class Parser:
             return Program(p[0])
 
         @self.pg.production("stmts : stmt")
-        def single_statement(p):
-            return [p[0]]
-
         @self.pg.production("stmts : stmts stmt")
-        def multiple_statement(p):
+        def single_statement(p):
+            if len(p) == 1:
+                return [p[0]]
             return p[0] + [p[1]]
 
         @self.pg.production("stmt : compound_stmt")
