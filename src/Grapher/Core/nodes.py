@@ -154,22 +154,19 @@ class Solve(AST):
 
 
 class Input(AST):
-    def __init__(self, name, prompt, cast):
+    def __init__(self, name, prompt):
         self.name = name
         self.prompt = prompt
-        self.cast = cast
 
     def codify(self):
         if self.prompt is not None:
             input_call = f"_i({self.prompt})"
         else:
             input_call = "_i()"
-        if self.cast is not None:
-            input_call = f"{lookup_type(self.cast)}({input_call})"
         return f"{get_symbol(self.name)}={input_call};"
 
     def serialise(self):
-        return {"type": "Input", "params": {"name": self.name, "prompt": self.prompt, "cast": self.cast}}
+        return {"type": "Input", "params": {"name": self.name, "prompt": self.prompt}}
 
 
 class If(AST):
