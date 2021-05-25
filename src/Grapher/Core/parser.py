@@ -47,16 +47,11 @@ class Parser:
             return p[0]
 
         @self.pg.production("assignment : ID EQUAL expr")
-        @self.pg.production("assignment : ID EQUAL expr AS type")
         def assignment(p):
             if len(p) == 3:
                 if p[0].value not in self.symbol_table:
                     self.symbol_table.append(p[0].value)
-                return Assignment(p[0].value, p[2], None)
-            else:
-                if p[0].value not in self.symbol_table:
-                    self.symbol_table.append(p[0].value)
-                return Assignment(p[0].value, p[2], p[4].value)
+                return Assignment(p[0].value, p[2])
 
         @self.pg.production("print_stmt : PRINT expr")
         def print_statement(p):
@@ -67,44 +62,49 @@ class Parser:
             return Plot(p[1])
 
         @self.pg.production("input_stmt : INPUT MORE ID")
-        @self.pg.production("input_stmt : INPUT MORE ID AS type")
-        @self.pg.production("input_stmt : INPUT STRING_LITERAL MORE ID")
-        @self.pg.production("input_stmt : INPUT STRING_LITERAL MORE ID AS type")
+        @self.pg.production("input_stmt : INPUT str_expr MORE ID")
         def input_statement(p):
             if len(p) == 3:
                 if p[2].value not in self.symbol_table:
-                    self.symbol_table.append(p[2])
-                return Input(p[2].value, None, None)
-            elif len(p) == 4:
-                if p[3].value not in self.symbol_table:
-                    self.symbol_table.append(p[3].value)
-                return Input(p[3].value, p[1].value, None)
-            elif len(p) == 5:
-                if p[2].value not in self.symbol_table:
-                    self.symbol_table.append(p[2])
-                return Input(p[2].value, None, p[4].value)
+                    self.symbol_table.append(p[2].value)
+                return Input(p[2].value, None)
             else:
                 if p[3].value not in self.symbol_table:
                     self.symbol_table.append(p[3].value)
-                return Input(p[3].value, p[1].value, p[5].value)
+                return Input(p[3].value, p[1])
 
-        @self.pg.production("if_stmt : IF LPAREN bool_expr RPAREN block")
-        @self.pg.production("if_stmt : IF LPAREN bool_expr RPAREN block ELSE block")
+        @self.pg.production("if_stmt : IF LPAREN expr RPAREN block")
+        @self.pg.production("if_stmt : IF LPAREN expr RPAREN block ELSE block")
         def if_statement(p):
             if len(p) == 5:
                 return If(p[2], p[4], None)
             return If(p[2], p[4], p[6])
 
-        @self.pg.production("while_stmt : WHILE LPAREN bool_expr RPAREN block")
+        @self.pg.production("while_stmt : WHILE LPAREN expr RPAREN block")
         def while_stmt(p):
             return While(p[2], p[4])
 
+        @self.pg.production("expr : str_expr")
+        @self.pg.production("expr : bool_expr")
         @self.pg.production("expr : solve_expr")
         @self.pg.production("expr : math_expr")
-        @self.pg.production("expr : str_expr")
+        @self.pg.production("expr : expr AS type")
         def expression(p):
             if len(p) == 1:
                 return p[0]
+            else:
+                return Cast(p[0], p[2])
+
+        @self.pg.production("str_expr : STRING_LITERAL")
+        @self.pg.production("str_expr : str_expr PLUS STRING_LITERAL")
+        @self.pg.production("str_expr : str_expr COMMA STRING_LITERAL")
+        def string_expression(p):
+            if len(p) == 1:
+                return p[0].value
+            elif p[1].name == "PLUS":
+                return StringAdd(p[0], p[2], False)
+            else:
+                return StringAdd(p[0], p[2], True)
 
         @self.pg.production("bool_expr : math_expr EQUALITY math_expr")
         @self.pg.production("bool_expr : math_expr LEQ math_expr")
@@ -115,53 +115,61 @@ class Parser:
             return Comparison(p[0], p[1].value, p[2])
 
         @self.pg.production("solve_expr : SOLVE math_expr")
-        @self.pg.production("solve_expr : SOLVE math_expr AS type")
+        @self.pg.production("solve_expr : SOLVE math_expr AS num_type")
         def solve_statement(p):
             if len(p) == 2:
                 return Solve(p[1], None)
-            return Solve(p[1], p[3].value)
+            return Solve(p[1], p[3])
 
-        @self.pg.production("math_expr : term")
-        @self.pg.production("math_expr : math_expr PLUS term")
-        @self.pg.production("math_expr : math_expr MINUS term")
+        @self.pg.production("math_expr : math_term")
+        @self.pg.production("math_expr : math_expr PLUS math_term")
+        @self.pg.production("math_expr : math_expr MINUS math_term")
         def math_expression(p):
             if len(p) == 1:
                 return p[0]
             else:
                 return BinaryOps(p[0], p[1].value, p[2])
 
-        @self.pg.production("term : factor")
-        @self.pg.production("term : MINUS factor")
-        @self.pg.production("term : term TIMES factor")
-        @self.pg.production("term : term DIVIDE factor")
+        @self.pg.production("math_term : math_factor")
+        @self.pg.production("math_term : math_term TIMES math_factor")
+        @self.pg.production("math_term : math_term DIVIDE math_factor")
         def term(p):
             if len(p) == 1:
                 return p[0]
-            elif len(p) == 2:
-                return BinaryOps(0, p[0].value, p[1])
             else:
                 return BinaryOps(p[0], p[1].value, p[2])
 
-        @self.pg.production("factor : NUMBER")
-        @self.pg.production("factor : ID")
-        @self.pg.production("factor : ID LPAREN math_expr RPAREN")
-        @self.pg.production("factor : factor CARAT factor")
-        @self.pg.production("factor : LPAREN math_expr RPAREN")
+        @self.pg.production("math_factor : power")
+        @self.pg.production("math_factor : PLUS math_factor")
+        @self.pg.production("math_factor : MINUS math_factor")
         def factor(p):
             if len(p) == 1:
-                if p[0].name == "ID":
-                    if p[0].value not in self.symbol_table:
-                        raise UndefinedName(p[0])
-                return p[0].value
-            elif len(p) == 4:
-                if p[0].name == "ID":
-                    if p[0].value not in self.symbol_table:
-                        raise UndefinedName(p[0])
-                return Evaluation(p[0].value, p[2])
-            elif type(p[1].value) == str:
-                return BinaryOps(p[0], p[1].value, p[2])
+                return p[0]
             else:
-                return p[1]
+                return BinaryOps(0, p[0].value, p[1])
+
+        @self.pg.production("power : primary")
+        @self.pg.production("power : primary CARAT math_factor")
+        def power(p):
+            if len(p) == 1:
+                return p[0]
+            else:
+                return BinaryOps(p[0], p[1].value, p[2])
+
+        @self.pg.production("primary : ID")
+        @self.pg.production("primary : NUMBER")
+        @self.pg.production("primary : group")
+        @self.pg.production("primary : primary group")
+        def primary(p):
+            if hasattr(p[0], "value"):
+                return p[0].value
+            elif len(p) == 2:
+                return Evaluation(p[0], p[1])
+            return p[0]
+
+        @self.pg.production("group : LPAREN expr RPAREN")
+        def group(p):
+            return p[1]
 
         @self.pg.production("block : stmt")
         @self.pg.production("block : LCURLY stmts RCURLY")
@@ -170,22 +178,17 @@ class Parser:
                 return [p[0]]
             return p[1]
 
-        @self.pg.production("str_expr : STRING_LITERAL")
-        @self.pg.production("str_expr : str_expr PLUS STRING_LITERAL")
-        @self.pg.production("str_expr : str_expr COMMA expr AS STRING")
-        def string_expression(p):
-            if len(p) == 1:
-                return p[0].value
-            elif p[1].name == "PLUS":
-                return p[0].value + p[2].value
-            else:
-                return StringAdd(p[0], p[2], True)
-
-        @self.pg.production("type : INTEGER")
-        @self.pg.production("type : REAL")
         @self.pg.production("type : STRING")
+        @self.pg.production("type : num_type")
         def type_spec(p):
+            if hasattr(p[0], "value"):
+                return p[0].value
             return p[0]
+
+        @self.pg.production("num_type : INTEGER")
+        @self.pg.production("num_type : REAL")
+        def num_type(p):
+            return p[0].value
 
         @self.pg.error
         def error_handle(token):
