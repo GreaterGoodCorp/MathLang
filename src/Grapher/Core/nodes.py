@@ -147,7 +147,7 @@ class Solve(AST):
         }
         if self.expr in global_symbol_match:
             self.expr = get_symbol(self.expr)
-        return f"list(_s.solveset({self.expr},domains={domain_map.get(self.expr, '_s.Reals')}))"
+        return f"list(_s.solveset({self.expr},domain={domain_map.get(self.expr, '_s.Reals')}))"
 
     def serialise(self):
         return {"type": "Solve", "params": {"expr": self.expr, "domain": self.domain}}
