@@ -348,7 +348,7 @@ class InvalidToken(BaseException):
         super().__init__(*args)
 
     def __str__(self):
-        if self.token.type == "$end":
+        if self.token.name == "$end":
             return "Unexpected EOF"
         return f"Invalid token: '{self.token.value}' at line {self.token.source_pos.lineno}"
 
