@@ -64,7 +64,7 @@ class Parser:
 
         @self.pg.production("plot_stmt : PLOT expr")
         def plot_statement(p):
-            return Plot(p[1], None)
+            return Plot(p[1])
 
         @self.pg.production("input_stmt : INPUT MORE ID")
         @self.pg.production("input_stmt : INPUT MORE ID AS type")

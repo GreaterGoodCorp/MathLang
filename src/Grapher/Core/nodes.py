@@ -124,15 +124,14 @@ class Print(AST):
 
 
 class Plot(AST):
-    def __init__(self, expr, domain):
+    def __init__(self, expr):
         self.expr = expr
-        self.domain = domain
 
     def codify(self):
         pass
 
     def serialise(self):
-        return {"type": "Plot", "params": {"expr": self.expr, "domain": self.domain}}
+        return {"type": "Plot", "params": {"expr": self.expr}}
 
 
 class Solve(AST):
