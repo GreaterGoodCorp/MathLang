@@ -99,8 +99,7 @@ class Evaluation(AST):
             self.expr = self.expr.codify()
         if self.expr in global_symbol_match:
             self.expr = get_symbol(self.expr)
-        d = {"x": str(sympy.sympify(self.expr)).replace(" ", "")}
-        return f"{get_symbol(self.name)}.subs({str(d)})"
+        return get_symbol(self.name) + ".subs({'x':" + str(sympy.sympify(self.expr)).replace(' ', '') + "})"
 
     def serialise(self):
         return {"type": "Evaluation", "params": {"name": self.name, "expr": self.expr}}
