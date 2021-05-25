@@ -353,7 +353,7 @@ class Cast(AST):
 
     def serialise(self) -> dict:
         return {
-            "name": "Cast",
+            "type": "Cast",
             "params": {
                 "expr": self.expr,
                 "cast": self.cast,
