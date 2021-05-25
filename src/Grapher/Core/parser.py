@@ -68,8 +68,8 @@ class Parser:
 
         @self.pg.production("input_stmt : INPUT MORE ID")
         @self.pg.production("input_stmt : INPUT MORE ID AS type")
-        @self.pg.production("input_stmt : INPUT STRING MORE ID")
-        @self.pg.production("input_stmt : INPUT STRING MORE ID AS type")
+        @self.pg.production("input_stmt : INPUT STRING_LITERAL MORE ID")
+        @self.pg.production("input_stmt : INPUT STRING_LITERAL MORE ID AS type")
         def input_statement(p):
             if len(p) == 3:
                 if p[2].value not in self.symbol_table:
@@ -170,8 +170,8 @@ class Parser:
                 return [p[0]]
             return p[1]
 
-        @self.pg.production("str_expr : STRING")
-        @self.pg.production("str_expr : str_expr PLUS STRING")
+        @self.pg.production("str_expr : STRING_LITERAL")
+        @self.pg.production("str_expr : str_expr PLUS STRING_LITERAL")
         @self.pg.production("str_expr : str_expr COMMA expr")
         def string_expression(p):
             if len(p) == 1:
