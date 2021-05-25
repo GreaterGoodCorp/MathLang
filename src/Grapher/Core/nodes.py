@@ -125,7 +125,11 @@ class Plot(AST):
         self.expr = expr
 
     def codify(self):
-        return f"_s.plot({self.expr})"
+        while type(self.expr) != str and self.expr is not None:
+            self.expr = self.expr.codify()
+        if self.expr in global_symbol_match:
+            self.expr = get_symbol(self.expr)
+        return f"_s.plot({self.expr});"
 
     def serialise(self):
         return {"type": "Plot", "params": {"expr": self.expr}}
