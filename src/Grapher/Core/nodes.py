@@ -21,7 +21,7 @@ def get_symbol(symbol):
 
 
 def lookup_type(t):
-    return {"INTEGER": "int", "REAL": "float"}[t]
+    return {"INTEGER": "int", "REAL": "float", "STRING": "str"}[t]
 
 
 class AST(metaclass=abc.ABCMeta):

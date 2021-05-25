@@ -172,7 +172,7 @@ class Parser:
 
         @self.pg.production("str_expr : STRING_LITERAL")
         @self.pg.production("str_expr : str_expr PLUS STRING_LITERAL")
-        @self.pg.production("str_expr : str_expr COMMA expr")
+        @self.pg.production("str_expr : str_expr COMMA expr AS STRING")
         def string_expression(p):
             if len(p) == 1:
                 return p[0].value
@@ -183,6 +183,7 @@ class Parser:
 
         @self.pg.production("type : INTEGER")
         @self.pg.production("type : REAL")
+        @self.pg.production("type : STRING")
         def type_spec(p):
             return p[0]
 

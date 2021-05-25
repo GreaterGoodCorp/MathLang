@@ -22,6 +22,8 @@ token_pair = (
     ("REAL", r"REAL"),
     # 7. Integer
     ("INTEGER", r"INTEGER"),
+    # 8. String
+    ("STRING", r"STRING"),
 
     # For flow controls
     # 1. If
