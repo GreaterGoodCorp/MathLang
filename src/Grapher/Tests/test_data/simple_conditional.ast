@@ -1,1 +1,73 @@
-{"type": "Program", "params": {"stmts": [{"type": "Assignment", "params": {"name": "f", "expr": "0", "cast": null}}, {"type": "If", "params": {"condition": {"type": "Comparison", "params": {"left": "f", "op": "==", "right": "0"}}, "true_block": [{"type": "Print", "params": {"expr": "\"f is 0\""}}], "false_block": null}}, {"type": "While", "params": {"condition": {"type": "Comparison", "params": {"left": "f", "op": "<", "right": "10"}}, "code_block": [{"type": "Print", "params": {"expr": "\"f is indeed smaller than 10\""}}, {"type": "Assignment", "params": {"name": "f", "expr": {"type": "BinaryOps", "params": {"left": "f", "op": "+", "right": "1"}}, "cast": null}}]}}]}}
+{
+    "type": "Program",
+    "params": {
+        "stmts": [
+            {
+                "type": "Assignment",
+                "params": {
+                    "name": "f",
+                    "expr": "0",
+                    "cast": null
+                }
+            },
+            {
+                "type": "If",
+                "params": {
+                    "condition": {
+                        "type": "Comparison",
+                        "params": {
+                            "left": "f",
+                            "op": "==",
+                            "right": "0"
+                        }
+                    },
+                    "true_block": [
+                        {
+                            "type": "Print",
+                            "params": {
+                                "expr": "\"f is 0\""
+                            }
+                        }
+                    ],
+                    "false_block": null
+                }
+            },
+            {
+                "type": "While",
+                "params": {
+                    "condition": {
+                        "type": "Comparison",
+                        "params": {
+                            "left": "f",
+                            "op": "<",
+                            "right": "10"
+                        }
+                    },
+                    "code_block": [
+                        {
+                            "type": "Print",
+                            "params": {
+                                "expr": "\"f is indeed smaller than 10\""
+                            }
+                        },
+                        {
+                            "type": "Assignment",
+                            "params": {
+                                "name": "f",
+                                "expr": {
+                                    "type": "BinaryOps",
+                                    "params": {
+                                        "left": "f",
+                                        "op": "+",
+                                        "right": "1"
+                                    }
+                                },
+                                "cast": null
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
