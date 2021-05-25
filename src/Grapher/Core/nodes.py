@@ -128,7 +128,7 @@ class Plot(AST):
         self.expr = expr
 
     def codify(self):
-        pass
+        return f"_s.plot({self.expr})"
 
     def serialise(self):
         return {"type": "Plot", "params": {"expr": self.expr}}
