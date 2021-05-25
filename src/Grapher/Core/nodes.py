@@ -47,7 +47,8 @@ class Program(AST):
 
     @staticmethod
     def init_code():
-        return f"import sympy as _s;_p=print;_i=input;{get_symbol('x')}=_s.Symbol(\"x\");"
+        return f"import sympy as _s;{get_symbol('x')}=_s.Symbol(\"x\")" \
+               f";_s.init_printing(pretty_print=True);f_p=print;_i=input;"
 
     @staticmethod
     def finalise_code(code: str):
