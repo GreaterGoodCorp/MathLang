@@ -179,7 +179,7 @@ class If(AST):
         global current_indent
         flag = True
         newline = "\n" + "\t" * (current_indent + 1)
-        code = newline[:-1] + f"while {self.condition.codify()}:"
+        code = newline[:-1] + f"if {self.condition.codify()}:"
         for stmt in self.true_block:
             if isinstance(stmt, (If, While)):
                 current_indent += 1
@@ -228,7 +228,7 @@ class While(AST):
         global current_indent
         flag = True
         newline = "\n" + "\t" * (current_indent + 1)
-        code = newline[:-1] + f"if {self.condition.codify()}:"
+        code = newline[:-1] + f"while {self.condition.codify()}:"
         for stmt in self.code_block:
             if isinstance(stmt, (If, While)):
                 current_indent += 1
