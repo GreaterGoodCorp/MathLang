@@ -105,6 +105,13 @@ class Parser:
             else:
                 return StringAdd(p[0], p[2], True)
 
+        @self.pg.production("str_term : STRING_LITERAL")
+        @self.pg.production("str_term : expr AS STRING")
+        def string_term(p):
+            if len(p) == 1:
+                return p[0].value
+            return Cast(p[0], p[2].value)
+
         @self.pg.production("bool_expr : math_expr EQUALITY math_expr")
         @self.pg.production("bool_expr : math_expr LEQ math_expr")
         @self.pg.production("bool_expr : math_expr GEQ math_expr")
@@ -176,13 +183,6 @@ class Parser:
             if len(p) == 1:
                 return [p[0]]
             return p[1]
-
-        @self.pg.production("type : STRING")
-        @self.pg.production("type : num_type")
-        def type_spec(p):
-            if hasattr(p[0], "value"):
-                return p[0].value
-            return p[0]
 
         @self.pg.production("num_type : INTEGER")
         @self.pg.production("num_type : REAL")
