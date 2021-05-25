@@ -162,16 +162,19 @@ class Parser:
             else:
                 return BinaryOps(p[0], p[1].value, p[2])
 
-        @self.pg.production("primary : ID")
-        @self.pg.production("primary : NUMBER")
-        @self.pg.production("primary : group")
-        @self.pg.production("primary : primary group")
+        @self.pg.production("primary : atom")
+        @self.pg.production("primary : ID group")
         def primary(p):
             if hasattr(p[0], "value"):
                 return p[0].value
             elif len(p) == 2:
                 return Evaluation(p[0], p[1])
             return p[0]
+
+        @self.pg.production("atom : ID")
+        @self.pg.production("atom : NUMBER")
+        def atom(p):
+            return p[0].value
 
         @self.pg.production("group : LPAREN expr RPAREN")
         def group(p):
