@@ -31,17 +31,18 @@ token_pair = (
     # 1. Parentheses
     ("LPAREN", r"\("),
     ("RPAREN", r"\)"),
-    # 3. Semicolon
+    # 2. Semicolon
     ("SEMICOLON", r"\;"),
-    # 4. Comma
+    # 3. Comma
     ("COMMA", r","),
 
     # For comparison operators
-    ("EQUALITY", r"=="),
-    ("LEQ", "<="),
-    ("GEQ", ">="),
-    ("LESS", r"<"),
-    ("MORE", r">"),
+    ("EQ", r"=="),
+    ("NEQ", r"=="),
+    ("LTE", "<="),
+    ("LT", r"<"),
+    ("GTE", ">="),
+    ("GT", r">"),
 
     # For operators
     # 1. Plus
