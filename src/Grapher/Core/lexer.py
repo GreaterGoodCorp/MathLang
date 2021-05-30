@@ -20,13 +20,6 @@ token_pair = (
     # 7. String
     ("STRING", r"STRING"),
 
-    # For flow controls
-    # 1. If
-    ("IF", r"if"),
-    ("ELSE", r"else"),
-    # 2. While
-    ("WHILE", r"while"),
-
     # For identifiers
     # At most 64 characters
     ("ID", r"[_a-zA-Z][_a-zA-Z0-9]{0,63}"),
