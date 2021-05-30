@@ -1,4 +1,4 @@
-from json import JSONEncoder, loads, dumps
+from json import dumps, JSONEncoder, loads
 
 from Grapher.Core.nodes import *
 

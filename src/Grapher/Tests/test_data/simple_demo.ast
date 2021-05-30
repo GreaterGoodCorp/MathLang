@@ -3,50 +3,17 @@
     "params": {
         "stmts": [
             {
-                "type": "Input",
-                "params": {
-                    "name": "a",
-                    "prompt": "\"Input a: \""
-                }
-            },
-            {
                 "type": "Assignment",
                 "params": {
                     "name": "a",
-                    "expr": {
-                        "type": "Cast",
-                        "params": {
-                            "expr": "a",
-                            "cast": "INTEGER"
-                        }
-                    }
-                }
-            },
-            {
-                "type": "Input",
-                "params": {
-                    "name": "b",
-                    "prompt": "\"Input b: \""
+                    "expr": "1"
                 }
             },
             {
                 "type": "Assignment",
                 "params": {
                     "name": "b",
-                    "expr": {
-                        "type": "Cast",
-                        "params": {
-                            "expr": "b",
-                            "cast": "INTEGER"
-                        }
-                    }
-                }
-            },
-            {
-                "type": "Input",
-                "params": {
-                    "name": "c",
-                    "prompt": "\"Input c: \""
+                    "expr": "7"
                 }
             },
             {
@@ -54,10 +21,11 @@
                 "params": {
                     "name": "c",
                     "expr": {
-                        "type": "Cast",
+                        "type": "BinaryOps",
                         "params": {
-                            "expr": "c",
-                            "cast": "INTEGER"
+                            "left": 0,
+                            "op": "-",
+                            "right": "8"
                         }
                     }
                 }
@@ -107,7 +75,15 @@
             {
                 "type": "Print",
                 "params": {
-                    "expr": "f"
+                    "args": [
+                        {
+                            "type": "Evaluation",
+                            "params": {
+                                "name": "f",
+                                "expr": "0"
+                            }
+                        }
+                    ]
                 }
             },
             {
@@ -126,26 +102,17 @@
             {
                 "type": "Print",
                 "params": {
-                    "expr": {
-                        "type": "StringAdd",
-                        "params": {
-                            "left": "\"Real roots of f are\"",
-                            "right": {
-                                "type": "Cast",
-                                "params": {
-                                    "expr": "roots",
-                                    "cast": "STRING"
-                                }
-                            },
-                            "pad": true
-                        }
-                    }
+                    "args": [
+                        "roots"
+                    ]
                 }
             },
             {
                 "type": "Plot",
                 "params": {
-                    "expr": "f"
+                    "args": [
+                        "f"
+                    ]
                 }
             }
         ]

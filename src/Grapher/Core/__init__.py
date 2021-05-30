@@ -1,7 +1,7 @@
-from .lexer import Lexer, get_source_signature
-from .parser import Parser, generate_ast
+from .lexer import get_source_signature, Lexer
+from .parser import generate_ast, Parser
 from .nodes import generate_python_code
-from .serialiser import serialise_ast, deserialise_ast
+from .serialiser import deserialise_ast, serialise_ast
 
 __all__ = [
     "Lexer",

@@ -1,9 +1,9 @@
 from pathlib import Path
-from json import loads, dumps
+from json import dumps, loads
 
 from pytest import fixture
 
-from Grapher.Core import generate_ast, serialise_ast, deserialise_ast
+from Grapher.Core import deserialise_ast, generate_ast, serialise_ast
 
 test_data_path = Path(__file__).parent.absolute() / "test_data"
 
@@ -12,7 +12,7 @@ class TestParser:
     @staticmethod
     @fixture()
     def quick_src():
-        return "PRINT \"Hello World\";"
+        return "f=2*x+1;roots=SOLVE f IN REAL;"
 
     @staticmethod
     @fixture()
