@@ -31,9 +31,6 @@ token_pair = (
     # 1. Parentheses
     ("LPAREN", r"\("),
     ("RPAREN", r"\)"),
-    # 2. Curly braces
-    ("LCURLY", r"{"),
-    ("RCURLY", r"}"),
     # 3. Semicolon
     ("SEMICOLON", r"\;"),
     # 4. Comma
