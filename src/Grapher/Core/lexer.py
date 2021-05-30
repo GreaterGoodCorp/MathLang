@@ -4,9 +4,6 @@ from rply import LexerGenerator
 
 # This tuple is the master token-pattern pairs list
 token_pair = (
-    # For strings
-    ("STRING_LITERAL", r'".*?"'),
-
     # For reserved keywords
     # 1. Print
     ("PRINT", r"print"),
