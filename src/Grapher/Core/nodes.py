@@ -186,36 +186,6 @@ class BinaryOps(AST):
         }
 
 
-class StringAdd(AST):
-    def __init__(self, left, right, pad):
-        self.left = left
-        self.right = right
-        self.pad = pad
-
-    def codify(self) -> str:
-        while type(self.left) != str and self.left is not None:
-            self.left = self.left.codify()
-        while type(self.right) != str and self.right is not None:
-            self.right = self.right.codify()
-        if self.left in global_symbol_match:
-            self.left = get_symbol(self.left)
-        if self.right in global_symbol_match:
-            self.right = get_symbol(self.right)
-        if self.pad:
-            return f"{str(self.left)}+\" \"+{str(self.right)}"
-        return f"{str(self.left)}+{str(self.right)}"
-
-    def serialise(self):
-        return {
-            "type": "StringAdd",
-            "params": {
-                "left": self.left,
-                "right": self.right,
-                "pad": self.pad
-            }
-        }
-
-
 class Comparison(AST):
     def __init__(self, left, op, right):
         self.left = left
