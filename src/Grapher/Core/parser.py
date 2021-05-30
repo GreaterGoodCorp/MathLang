@@ -21,133 +21,93 @@ class Parser:
         def program(p):
             return Program(p[0])
 
-        @self.pg.production("stmts : stmt")
-        @self.pg.production("stmts : stmts stmt")
+        @self.pg.production("stmts : stmt_semicolon")
+        @self.pg.production("stmts : stmts stmt_semicolon")
         def single_statement(p):
             if len(p) == 1:
                 return [p[0]]
             return p[0] + [p[1]]
 
-        @self.pg.production("stmt : compound_stmt")
-        @self.pg.production("stmt : simple_stmt SEMICOLON")
+        @self.pg.production("stmt_semicolon : stmt SEMICOLON")
         def statement(p):
             return p[0]
 
-        @self.pg.production("simple_stmt : assignment")
-        @self.pg.production("simple_stmt : print_stmt")
-        @self.pg.production("simple_stmt : plot_stmt")
-        @self.pg.production("simple_stmt : input_stmt")
+        @self.pg.production("stmt : assignment")
+        @self.pg.production("stmt : print_stmt")
+        @self.pg.production("stmt : plot_stmt")
         def simple_statement(p):
-            return p[0]
-
-        @self.pg.production("compound_stmt : if_stmt")
-        @self.pg.production("compound_stmt : while_stmt")
-        def compound_statement(p):
             return p[0]
 
         @self.pg.production("assignment : ID EQUAL expr")
         def assignment(p):
-            if len(p) == 3:
-                if p[0].value not in self.symbol_table:
-                    self.symbol_table.append(p[0].value)
-                return Assignment(p[0].value, p[2])
+            if p[0].value not in self.symbol_table:
+                self.symbol_table.append(p[0].value)
+            return Assignment(p[0].value, p[2])
 
         @self.pg.production("print_stmt : PRINT expr")
+        @self.pg.production("print_stmt : print_stmt COMMA expr")
         def print_statement(p):
-            return Print(p[1])
+            if len(p) == 2:
+                return Print([p[1]])
+            else:
+                return Print(p[0].args + [p[2]])
 
         @self.pg.production("plot_stmt : PLOT expr")
+        @self.pg.production("plot_stmt : plot_stmt COMMA expr")
         def plot_statement(p):
-            return Plot(p[1])
-
-        @self.pg.production("input_stmt : INPUT MORE ID")
-        @self.pg.production("input_stmt : INPUT str_expr MORE ID")
-        def input_statement(p):
-            if len(p) == 3:
-                if p[2].value not in self.symbol_table:
-                    self.symbol_table.append(p[2].value)
-                return Input(p[2].value, None)
+            if len(p) == 2:
+                return Plot([p[1]])
             else:
-                if p[3].value not in self.symbol_table:
-                    self.symbol_table.append(p[3].value)
-                return Input(p[3].value, p[1])
+                return Plot(p[0].args + [p[2]])
 
-        @self.pg.production("if_stmt : IF LPAREN expr RPAREN block")
-        @self.pg.production("if_stmt : IF LPAREN expr RPAREN block ELSE block")
-        def if_statement(p):
-            if len(p) == 5:
-                return If(p[2], p[4], None)
-            return If(p[2], p[4], p[6])
-
-        @self.pg.production("while_stmt : WHILE LPAREN expr RPAREN block")
-        def while_stmt(p):
-            return While(p[2], p[4])
-
-        @self.pg.production("expr : str_expr")
-        @self.pg.production("expr : bool_expr")
+        @self.pg.production("expr : m_expr")
         @self.pg.production("expr : solve_expr")
-        @self.pg.production("expr : math_expr")
-        @self.pg.production("expr : expr AS num_type")
         def expression(p):
-            if len(p) == 1:
-                return p[0]
-            else:
-                return Cast(p[0], p[2])
+            return p[0]
 
-        @self.pg.production("str_expr : str_term")
-        @self.pg.production("str_expr : str_expr PLUS str_term")
-        @self.pg.production("str_expr : str_expr COMMA str_term")
-        def string_expression(p):
-            if len(p) == 1:
-                return p[0]
-            elif p[1].name == "PLUS":
-                return StringAdd(p[0], p[2], False)
-            else:
-                return StringAdd(p[0], p[2], True)
+        @self.pg.production("solve_expr : SOLVE ID IN set")
+        def solve_statement(p):
+            return Solve(p[1].value, p[3])
 
-        @self.pg.production("str_term : STRING_LITERAL")
-        @self.pg.production("str_term : expr AS STRING")
-        def string_term(p):
-            if len(p) == 1:
-                return p[0].value
-            return Cast(p[0], p[2].value)
+        @self.pg.production("set : REAL")
+        @self.pg.production("set : RATIONAL")
+        @self.pg.production("set : INTEGER")
+        def num_set(p):
+            return p[0].value
 
-        @self.pg.production("bool_expr : math_expr EQUALITY math_expr")
-        @self.pg.production("bool_expr : math_expr LEQ math_expr")
-        @self.pg.production("bool_expr : math_expr GEQ math_expr")
-        @self.pg.production("bool_expr : math_expr LESS math_expr")
-        @self.pg.production("bool_expr : math_expr MORE math_expr")
+        @self.pg.production("m_expr : sum")
+        @self.pg.production("m_expr : m_expr EQ sum")
+        @self.pg.production("m_expr : m_expr NEQ sum")
+        @self.pg.production("m_expr : m_expr LTE sum")
+        @self.pg.production("m_expr : m_expr LT sum")
+        @self.pg.production("m_expr : m_expr GTE sum")
+        @self.pg.production("m_expr : m_expr GT sum")
         def bool_expression(p):
+            if len(p) == 1:
+                return p[0]
             return Comparison(p[0], p[1].value, p[2])
 
-        @self.pg.production("solve_expr : SOLVE math_expr")
-        @self.pg.production("solve_expr : SOLVE math_expr AS num_type")
-        def solve_statement(p):
-            if len(p) == 2:
-                return Solve(p[1], None)
-            return Solve(p[1], p[3])
-
-        @self.pg.production("math_expr : math_term")
-        @self.pg.production("math_expr : math_expr PLUS math_term")
-        @self.pg.production("math_expr : math_expr MINUS math_term")
+        @self.pg.production("sum : term")
+        @self.pg.production("sum : sum PLUS term")
+        @self.pg.production("sum : sum MINUS term")
         def math_expression(p):
             if len(p) == 1:
                 return p[0]
             else:
                 return BinaryOps(p[0], p[1].value, p[2])
 
-        @self.pg.production("math_term : math_factor")
-        @self.pg.production("math_term : math_term TIMES math_factor")
-        @self.pg.production("math_term : math_term DIVIDE math_factor")
+        @self.pg.production("term : factor")
+        @self.pg.production("term : term TIMES factor")
+        @self.pg.production("term : term DIVIDE factor")
         def term(p):
             if len(p) == 1:
                 return p[0]
             else:
                 return BinaryOps(p[0], p[1].value, p[2])
 
-        @self.pg.production("math_factor : power")
-        @self.pg.production("math_factor : PLUS math_factor")
-        @self.pg.production("math_factor : MINUS math_factor")
+        @self.pg.production("factor : power")
+        @self.pg.production("factor : PLUS factor")
+        @self.pg.production("factor : MINUS factor")
         def factor(p):
             if len(p) == 1:
                 return p[0]
@@ -155,7 +115,7 @@ class Parser:
                 return BinaryOps(0, p[0].value, p[1])
 
         @self.pg.production("power : primary")
-        @self.pg.production("power : primary CARAT math_factor")
+        @self.pg.production("power : primary CARAT factor")
         def power(p):
             if len(p) == 1:
                 return p[0]
@@ -163,34 +123,26 @@ class Parser:
                 return BinaryOps(p[0], p[1].value, p[2])
 
         @self.pg.production("primary : atom")
-        @self.pg.production("primary : ID group")
+        @self.pg.production("primary : func_eval")
         def primary(p):
-            if hasattr(p[0], "value"):
-                return p[0].value
-            elif len(p) == 2:
-                return Evaluation(p[0], p[1])
             return p[0]
 
         @self.pg.production("atom : ID")
         @self.pg.production("atom : NUMBER")
+        @self.pg.production("atom : group")
         def atom(p):
-            return p[0].value
+            try:
+                return p[0].value
+            except AttributeError:
+                return p[0]
+
+        @self.pg.production("func_eval : ID group")
+        def func_eval(p):
+            return Evaluation(p[0].value, p[1])
 
         @self.pg.production("group : LPAREN expr RPAREN")
         def group(p):
             return p[1]
-
-        @self.pg.production("block : stmt")
-        @self.pg.production("block : LCURLY stmts RCURLY")
-        def block(p):
-            if len(p) == 1:
-                return [p[0]]
-            return p[1]
-
-        @self.pg.production("num_type : INTEGER")
-        @self.pg.production("num_type : REAL")
-        def num_type(p):
-            return p[0].value
 
         @self.pg.error
         def error_handle(token):
