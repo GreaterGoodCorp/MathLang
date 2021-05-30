@@ -219,5 +219,14 @@ class UndefinedName(BaseException):
         return f"Undefined name '{self.token.value}' at line {self.token.source_pos.lineno}"
 
 
-def generate_python_code(ast):
+def generate_python_code(ast: AST) -> str:
+    """Generate valid Python code from Grapher AST.
+
+    The generated python code will be changed from time to time.
+
+    :param ast: The abstract syntax tree of Grapher source code.
+    :type ast: AST
+    :return: A Python code string.
+    :rtype: str
+    """
     return ast.codify()

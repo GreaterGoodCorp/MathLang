@@ -29,8 +29,10 @@ def json_decode_hook(o):
 
 
 def serialise_ast(ast: AST) -> str:
+    """Serialises Grapher AST to JSON. This function is dangerous and used for debugging purposes only."""
     return dumps(ast, cls=ASTSerialiser)
 
 
 def deserialise_ast(d: str) -> AST:
+    """Deserialises JSON to Grapher AST. This function is dangerous and used for debugging purposes only."""
     return loads(d, object_hook=json_decode_hook)

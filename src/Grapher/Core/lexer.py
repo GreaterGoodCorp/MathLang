@@ -1,6 +1,7 @@
 import re
+from typing import Generator
 
-from rply import LexerGenerator
+from rply import LexerGenerator, Token
 
 # This tuple is the master token-pattern pairs list
 token_pair = (
@@ -96,7 +97,14 @@ class Lexer:
             self.lg.ignore(it)
         return self.lg.build()
 
-    def lex(self, s):
+    def lex(self, s) -> Generator[Token]:
+        """Yields a stream of tokens from source.
+
+        :param s: Grapher source code.
+        :type s: str
+        :return: A stream of tokens.
+        :rtype: Generator[Token]
+        """
         for token in self.lexer.lex(s):
             # Ignore whitespace
             if token.name == "WHITESPACE":
@@ -104,5 +112,15 @@ class Lexer:
             yield token
 
 
-def get_source_signature(source):
+def get_source_signature(source) -> str:
+    """Gets signature of Grapher source.
+
+    Note that the signature only takes into account the source code, not any comments. As a result, two sources might
+    have the same signature despite the fact that their hashes are different.
+
+    :param source: Grapher source code.
+    :type source: str
+    :return: A signature string.
+    :rtype: str
+    """
     return " ".join([f"{_.name}:{_.value}" for _ in Lexer().lex(source)])

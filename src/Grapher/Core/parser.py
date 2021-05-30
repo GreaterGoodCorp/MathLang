@@ -149,10 +149,20 @@ class Parser:
             raise InvalidToken(token)
 
     def parse(self, tokens):
+        """Parses the token stream into Grapher AST. Please do not call this function directly, use 'generate_ast()'
+        instead for AST generation.
+        """
         return self.parser.parse(tokens)
 
 
-def generate_ast(source):
+def generate_ast(source: str) -> AST:
+    """Generates Grapher AST from Grapher source code.
+
+    :param source: Grapher source code.
+    :type source: str
+    :return: Grapher AST.
+    :rtype: str
+    """
     lexer = Lexer()
     parser = Parser(lexer.tokens)
     ast = parser.parse(lexer.lex(source))

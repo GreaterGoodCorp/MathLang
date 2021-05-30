@@ -1,25 +1,39 @@
 import os
 import warnings
-from typing import Union
 import marshal
 import hmac
 import base64
+from py import code
 
-from Grapher.Core.nodes import AST
+from Grapher.Core import generate_ast
 
 
 class Compiler:
     @staticmethod
-    def compile(source: Union[AST, str]) -> bytes:
-        if isinstance(source, str):
-            bytecode = Compiler.__compile(source)
-        else:
-            bytecode = Compiler.__compile(source.codify())
+    def compile(source: str) -> bytes:
+        """Compiles Grapher source code to Grapher bytecode.
+
+        :param source: Grapher source code.
+        :type source: str
+        :return: Grapher bytecode.
+        :rtype: bytes
+        """
+        ast = generate_ast(source)
+        bytecode = Compiler.__compile(ast.codify())
         signature = Compiler.__sign(bytecode, True)
         return bytecode + signature
 
     @staticmethod
-    def decompile(source: bytes, unsafe: bool = False) -> bytes:
+    def decompile(source: bytes, unsafe: bool = False) -> code:
+        """Decompile Grapher bytecode to Python bytecode.
+
+        :param source: Grapher bytecode.
+        :type source: bytes
+        :param unsafe: Whether to enable unsafe decompilation.
+        :type unsafe: bytes
+        :return: Python bytecode.
+        :rtype: code
+        """
         bytecode, signature = source[:-64], source[-64:]
         try:
             ctrl_signature = Compiler.__sign(bytecode, False)
@@ -36,7 +50,10 @@ class Compiler:
                                                "The program must be decompiled in 'unsafe' mode")
             else:
                 warnings.warn("Signature verification failed. Proceed with execution carefully.")
-        return Compiler.__decompile(bytecode)
+        try:
+            return Compiler.__decompile(bytecode)
+        except (EOFError, ValueError, TypeError):
+            raise ValueError("Grapher bytecode cannot be decompiled due to data corruption.")
 
     @staticmethod
     def get_signing_key():
