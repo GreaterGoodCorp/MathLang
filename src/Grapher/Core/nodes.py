@@ -182,15 +182,7 @@ class Comparison(AST):
         self.right = right
 
     def codify(self):
-        while type(self.left) != str and self.left is not None:
-            self.left = self.left.codify()
-        while type(self.right) != str and self.right is not None:
-            self.right = self.right.codify()
-        if self.left in global_symbol_match:
-            self.left = get_symbol(self.left)
-        if self.right in global_symbol_match:
-            self.right = get_symbol(self.right)
-        return f"{self.left}{self.op}{self.right}"
+        return str(sympy.sympify(f"({get_str(self.left)}){self.op}({get_str(self.right)})")).replace(" ", "")
 
     def serialise(self):
         return {
