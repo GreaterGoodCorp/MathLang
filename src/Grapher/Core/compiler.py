@@ -40,14 +40,12 @@ class Compiler:
             assert hmac.compare_digest(signature, ctrl_signature)
         except UnverifiedSignatureWarning:
             if not unsafe:
-                raise UnsafeDecompilationError("No signing key found. "
-                                               "The program must be decompiled in 'unsafe' mode.")
+                raise UnsafeDecompilationError("No signing key found.")
             else:
                 warnings.warn("No signing key found. Signature verification will be skipped.")
         except AssertionError:
             if not unsafe:
-                raise UnsafeDecompilationError("Signature verification failed. "
-                                               "The program must be decompiled in 'unsafe' mode")
+                raise UnsafeDecompilationError("Signature verification failed.")
             else:
                 warnings.warn("Signature verification failed. Proceed with execution carefully.")
         try:
