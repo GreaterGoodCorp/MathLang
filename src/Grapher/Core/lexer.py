@@ -11,8 +11,6 @@ token_pair = (
     ("PLOT", r"plot"),
     # 3. Solve
     ("SOLVE", r"solve"),
-    # 4. Input
-    ("INPUT", r"input"),
     # 5. As
     ("AS", r"as"),
     # 6. Real
