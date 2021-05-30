@@ -1,6 +1,5 @@
 import os
-import warnings
-import marshal
+import dill
 import hmac
 import base64
 from py import code
@@ -59,11 +58,11 @@ class Compiler:
 
     @staticmethod
     def __compile(source):
-        return marshal.dumps(compile(source, "<Grapher>", "exec", optimize=2))
+        return dill.dumps(compile(source, "<Grapher>", "exec", optimize=2))
 
     @staticmethod
     def __decompile(bytecode):
-        return marshal.loads(bytecode)
+        return dill.loads(bytecode)
 
     @staticmethod
     def __sign(source, is_compile):
