@@ -22,12 +22,6 @@ class TestCodegen:
 
     @staticmethod
     @fixture()
-    def conditional_ast():
-        with open(test_data_path / "simple_conditional.ast") as fp:
-            return dumps(loads(fp.read()))
-
-    @staticmethod
-    @fixture()
     def redirect_stdout():
         return "import sys;import io;sys.stdout=io.StringIO();"
 
@@ -37,6 +31,6 @@ class TestCodegen:
         assert exec(code) is None
 
     @staticmethod
-    def test_conditional_codegen(redirect_stdout, conditional_ast):
-        code = redirect_stdout + generate_python_code(deserialise_ast(conditional_ast))
+    def test_demo_codegen(redirect_stdout, demo_ast):
+        code = redirect_stdout + generate_python_code(deserialise_ast(demo_ast))
         assert exec(code) is None
