@@ -57,18 +57,21 @@ class Program(AST):
 
     @staticmethod
     def init_code():
-        return f"import sympy as _s;{get_symbol('x')}=_s.Symbol(\"x\")" \
-               f";_s.init_printing(pretty_print=True);_p=print;_i=input;"
+        # Custom print
+        code = f"def _p(*_):\n\ttry:\n\t\t_s.pprint(_)\n\texcept TypeError:\n\t\tprint(_)\n"
+        # Sympy's essentials
+        code += f"import sympy as _s;{get_symbol('x')}=_s.Symbol(\"x\");_s.init_printing();"
+        return code
 
     @staticmethod
     def finalise_code(code: str):
-        return code + "del _s,_p,_i," + ",".join([get_symbol(i) for i in global_symbol_match]) + ";"
+        return code + "del _s,_p," + ",".join([get_symbol(i) for i in global_symbol_match]) + ";"
 
     def codify(self):
         code = Program.init_code()
         for stmt in self.stmts:
             code += str(stmt.codify())
-        return Program.finalise_code(code.strip("\n\t"))
+        return Program.finalise_code(code)
 
     def serialise(self):
         return {"type": "Program", "params": {"stmts": self.stmts}}
@@ -133,7 +136,7 @@ class Solve(AST):
             "INTEGER": "_s.Integers",
             "REAL": "_s.Reals",
         }
-        return f"list(_s.solveset({get_str(self.expr)},domain={domain_map.get(get_str(self.domain), '_s.Reals')}))"
+        return f"_s.solveset({get_str(self.expr)},domain={domain_map.get(get_str(self.domain), '_s.Reals')})"
 
     def serialise(self):
         return {"type": "Solve", "params": {"expr": self.expr, "domain": self.domain}}
