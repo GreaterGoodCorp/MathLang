@@ -2,6 +2,7 @@ from .lexer import get_source_signature, Lexer
 from .parser import generate_ast, Parser
 from .nodes import generate_python_code
 from .serialiser import deserialise_ast, serialise_ast
+from .compiler import Compiler
 
 __all__ = [
     "Lexer",
@@ -11,4 +12,5 @@ __all__ = [
     "generate_python_code",
     "serialise_ast",
     "deserialise_ast",
+    "Compiler",
 ]
