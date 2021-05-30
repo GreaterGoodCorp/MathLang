@@ -40,13 +40,9 @@ class Compiler:
         except UnverifiedSignatureWarning:
             if not unsafe:
                 raise UnsafeDecompilationError("No signing key found.")
-            else:
-                warnings.warn("No signing key found. Signature verification will be skipped.")
         except AssertionError:
             if not unsafe:
                 raise UnsafeDecompilationError("Signature verification failed.")
-            else:
-                warnings.warn("Signature verification failed. Proceed with execution carefully.")
         try:
             return Compiler.__decompile(bytecode)
         except (EOFError, ValueError, TypeError):
@@ -74,7 +70,6 @@ class Compiler:
         if s is not None:
             return base64.b64decode(s)
         if is_compile:
-            warnings.warn("No singing key found, a random key is used.", UnverifiedSignatureWarning)
             return Compiler.__get_random_signature_key()
         else:
             raise UnverifiedSignatureWarning
