@@ -17,8 +17,6 @@ token_pair = (
     ("REAL", r"REAL"),
     # 6. Integer
     ("INTEGER", r"INTEGER"),
-    # 7. String
-    ("STRING", r"STRING"),
 
     # For identifiers
     # At most 64 characters
