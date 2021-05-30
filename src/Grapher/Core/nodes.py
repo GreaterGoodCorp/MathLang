@@ -94,8 +94,8 @@ class Evaluation(AST):
 
 
 class Print(AST):
-    def __init__(self, expr):
-        self.expr = expr
+    def __init__(self, args):
+        self.args = args
 
     def codify(self):
         while type(self.expr) != str and self.expr is not None:
@@ -109,8 +109,8 @@ class Print(AST):
 
 
 class Plot(AST):
-    def __init__(self, expr):
-        self.expr = expr
+    def __init__(self, args):
+        self.args = args
 
     def codify(self):
         while type(self.expr) != str and self.expr is not None:
