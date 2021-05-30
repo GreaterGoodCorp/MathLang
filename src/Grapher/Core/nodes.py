@@ -1,6 +1,5 @@
 from __future__ import annotations
 import abc
-import re
 
 import sympy
 
@@ -52,15 +51,7 @@ class Program(AST):
 
     @staticmethod
     def finalise_code(code: str):
-        loc = -code[::-1].find("\n") - 1
-        if code.find("\t", loc) == -1:
-            del_str = ""
-        else:
-            del_str = "\n"
-        del_str += "del _s,_p,_i,"
-        del_str += ",".join([get_symbol(i) for i in global_symbol_match]) + ";"
-        code = re.sub(r"(\n\t*){2}", r"\1", code)
-        return code + del_str
+        return code + "del _s,_p,_i," + ",".join([get_symbol(i) for i in global_symbol_match]) + ";"
 
     def codify(self):
         code = Program.init_code()
