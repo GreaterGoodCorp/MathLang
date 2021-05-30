@@ -23,6 +23,16 @@ def lookup_type(t):
     return {"INTEGER": "int", "REAL": "float", "STRING": "str"}[t]
 
 
+def get_str(obj):
+    while True:
+        if isinstance(obj, AST):
+            obj = obj.codify()
+        elif obj in global_symbol_match:
+            return get_symbol(obj)
+        else:
+            return obj
+
+
 class AST(metaclass=abc.ABCMeta):
     """Parent class of all AST nodes."""
 
@@ -69,9 +79,7 @@ class Assignment(AST):
         self.expr = expr
 
     def codify(self):
-        while type(self.expr) != str and self.expr is not None:
-            self.expr = self.expr.codify()
-        return f"{get_symbol(self.name)}={self.expr};"
+        return f"{get_str(self.name)}={get_str(self.expr)};"
 
     def serialise(self):
         return {"type": "Assignment", "params": {"name": self.name, "expr": self.expr}}
@@ -83,11 +91,7 @@ class Evaluation(AST):
         self.expr = expr
 
     def codify(self):
-        while type(self.expr) != str and self.expr is not None:
-            self.expr = self.expr.codify()
-        if self.expr in global_symbol_match:
-            self.expr = get_symbol(self.expr)
-        return get_symbol(self.name) + ".subs({'x':" + str(sympy.sympify(self.expr)).replace(' ', '') + "})"
+        return get_str(self.name) + ".subs({'x':" + str(sympy.sympify(get_str(self.expr))).replace(' ', '') + "})"
 
     def serialise(self):
         return {"type": "Evaluation", "params": {"name": self.name, "expr": self.expr}}
@@ -98,14 +102,11 @@ class Print(AST):
         self.args = args
 
     def codify(self):
-        while type(self.expr) != str and self.expr is not None:
-            self.expr = self.expr.codify()
-        if self.expr in global_symbol_match:
-            self.expr = get_symbol(self.expr)
-        return f"_p({self.expr});"
+        self.args = list(map(get_str, self.args))
+        return f"_p({','.join(self.args)});"
 
     def serialise(self):
-        return {"type": "Print", "params": {"expr": self.expr}}
+        return {"type": "Print", "params": {"args": self.args}}
 
 
 class Plot(AST):
@@ -113,14 +114,12 @@ class Plot(AST):
         self.args = args
 
     def codify(self):
-        while type(self.expr) != str and self.expr is not None:
-            self.expr = self.expr.codify()
-        if self.expr in global_symbol_match:
-            self.expr = get_symbol(self.expr)
-        return f"_s.plot({self.expr});"
+        self.args = list(map(get_str, self.args))
+        code = f"_s.plot({','.join(self.args)});"
+        return code
 
     def serialise(self):
-        return {"type": "Plot", "params": {"expr": self.expr}}
+        return {"type": "Plot", "params": {"args": self.args}}
 
 
 class Solve(AST):
@@ -133,9 +132,7 @@ class Solve(AST):
             "INTEGER": "_s.Integers",
             "REAL": "_s.Reals",
         }
-        if self.expr in global_symbol_match:
-            self.expr = get_symbol(self.expr)
-        return f"list(_s.solveset({self.expr},domain={domain_map.get(self.expr, '_s.Reals')}))"
+        return f"list(_s.solveset({get_str(self.expr)},domain={domain_map.get(get_str(self.domain), '_s.Reals')}))"
 
     def serialise(self):
         return {"type": "Solve", "params": {"expr": self.expr, "domain": self.domain}}
@@ -151,7 +148,7 @@ class Input(AST):
             input_call = f"_i({self.prompt})"
         else:
             input_call = "_i()"
-        return f"{get_symbol(self.name)}={input_call};"
+        return f"{get_str(self.name)}={input_call};"
 
     def serialise(self):
         return {"type": "Input", "params": {"name": self.name, "prompt": self.prompt}}
@@ -164,16 +161,8 @@ class BinaryOps(AST):
         self.right = right
 
     def codify(self):
-        while type(self.left) != str and self.left is not None:
-            self.left = self.left.codify()
-        while type(self.right) != str and self.right is not None:
-            self.right = self.right.codify()
-        if self.left in global_symbol_match:
-            self.left = get_symbol(self.left)
-        if self.right in global_symbol_match:
-            self.right = get_symbol(self.right)
         self.op = "**" if self.op == "^" else self.op
-        return str(sympy.sympify(f"({self.left}){self.op}({self.right})")).replace(" ", "")
+        return str(sympy.sympify(f"({get_str(self.left)}){self.op}({get_str(self.right)})")).replace(" ", "")
 
     def serialise(self):
         return {
