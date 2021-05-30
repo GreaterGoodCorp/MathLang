@@ -67,21 +67,18 @@ class Compiler:
 
     @staticmethod
     def __sign(source, is_compile):
-        return hmac.new(Compiler.__get_signature_key(is_compile), source, "sha256").digest()
+        return hmac.new(Compiler.__get_signature_key(is_compile), source, "sha512").digest()
 
     @staticmethod
     def __get_signature_key(is_compile):
-        s = base64.b64decode(os.getenv("GRAPHER_SIGNING_KEY"))
-        if s is None:
-            if is_compile:
-                warnings.warn(
-                    "No singing key found, a random key is used. "
-                    "The program must be executed in 'unsafe' mode.",
-                    UnverifiedSignatureWarning)
-                return Compiler.__get_random_signature_key()
-            else:
-                raise UnverifiedSignatureWarning
-        return s
+        s = os.getenv("GRAPHER_SIGNING_KEY")
+        if s is not None:
+            return base64.b64decode(s)
+        if is_compile:
+            warnings.warn("No singing key found, a random key is used.", UnverifiedSignatureWarning)
+            return Compiler.__get_random_signature_key()
+        else:
+            raise UnverifiedSignatureWarning
 
     @staticmethod
     def __get_random_signature_key():

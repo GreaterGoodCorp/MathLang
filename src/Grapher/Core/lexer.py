@@ -97,7 +97,7 @@ class Lexer:
             self.lg.ignore(it)
         return self.lg.build()
 
-    def lex(self, s) -> Generator[Token]:
+    def lex(self, s) -> Generator[Token, None, None]:
         """Yields a stream of tokens from source.
 
         :param s: Grapher source code.
