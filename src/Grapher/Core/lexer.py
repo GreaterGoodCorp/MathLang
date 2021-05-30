@@ -15,7 +15,9 @@ token_pair = (
     ("IN", r"IN"),
     # 5. Real
     ("REAL", r"REAL"),
-    # 6. Integer
+    # 6. Rational
+    ("RATIONAL", r"RATIONAL"),
+    # 7. Integer
     ("INTEGER", r"INTEGER"),
 
     # For identifiers
