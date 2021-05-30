@@ -11,13 +11,13 @@ token_pair = (
     ("PLOT", r"plot"),
     # 3. Solve
     ("SOLVE", r"solve"),
-    # 5. As
-    ("AS", r"as"),
-    # 6. Real
+    # 4. In
+    ("IN", r"IN"),
+    # 5. Real
     ("REAL", r"REAL"),
-    # 7. Integer
+    # 6. Integer
     ("INTEGER", r"INTEGER"),
-    # 8. String
+    # 7. String
     ("STRING", r"STRING"),
 
     # For flow controls
