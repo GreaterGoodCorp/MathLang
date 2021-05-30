@@ -57,15 +57,13 @@ class Program(AST):
 
     @staticmethod
     def init_code():
-        # Custom print
-        code = f"def _p(*_):\n\ttry:\n\t\t_s.pprint(_)\n\texcept TypeError:\n\t\tprint(_)\n"
         # Sympy's essentials
-        code += f"import sympy as _s;{get_symbol('x')}=_s.Symbol(\"x\");_s.init_printing();"
+        code = f"import sympy as _s;{get_symbol('x')}=_s.Symbol(\"x\");_s.init_printing();_pp=_s.pprint;"
         return code
 
     @staticmethod
     def finalise_code(code: str):
-        return code + "del _s,_p," + ",".join([get_symbol(i) for i in global_symbol_match]) + ";"
+        return code + "del _s,_pp," + ",".join([get_symbol(i) for i in global_symbol_match]) + ";"
 
     def codify(self):
         code = Program.init_code()
@@ -106,8 +104,8 @@ class Print(AST):
         self.args = args
 
     def codify(self):
-        self.args = list(map(get_str, self.args))
-        return f"_p({','.join(self.args)});"
+        self.args = list(map(lambda s: f"str({s})", map(get_str, self.args)))
+        return f"_pp({'+'.join(self.args)});"
 
     def serialise(self):
         return {"type": "Print", "params": {"args": self.args}}
