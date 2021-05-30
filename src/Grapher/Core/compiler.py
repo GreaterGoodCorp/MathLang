@@ -93,3 +93,9 @@ class UnverifiedSignatureWarning(Warning):
 class UnsafeDecompilationError(BaseException):
     def __init__(self, *args):
         super(UnsafeDecompilationError, self).__init__(*args)
+
+
+def execute(source) -> None:
+    """Executes Grapher source code. This function is dangerous and used for debugging purposes only."""
+    s = Compiler.compile(source)
+    exec(Compiler.decompile(s, True))
