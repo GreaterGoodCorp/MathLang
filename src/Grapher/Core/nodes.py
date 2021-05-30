@@ -203,28 +203,6 @@ class Comparison(AST):
         }
 
 
-class Cast(AST):
-    def __init__(self, expr, cast):
-        self.expr = expr
-        self.cast = cast
-
-    def codify(self) -> str:
-        while type(self.expr) != str and self.expr is not None:
-            self.expr = self.expr.codify()
-        if self.expr in global_symbol_match:
-            self.expr = get_symbol(self.expr)
-        return f"{lookup_type(self.cast)}({self.expr})"
-
-    def serialise(self) -> dict:
-        return {
-            "type": "Cast",
-            "params": {
-                "expr": self.expr,
-                "cast": self.cast,
-            }
-        }
-
-
 class InvalidToken(BaseException):
     def __init__(self, token, *args):
         self.token = token
