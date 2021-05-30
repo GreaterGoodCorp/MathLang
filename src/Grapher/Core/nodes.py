@@ -56,9 +56,6 @@ class Program(AST):
     def codify(self):
         code = Program.init_code()
         for stmt in self.stmts:
-            if isinstance(stmt, (If, While)):
-                code += str(stmt.codify())
-                continue
             code += str(stmt.codify())
         return Program.finalise_code(code.strip("\n\t"))
 
@@ -158,89 +155,6 @@ class Input(AST):
 
     def serialise(self):
         return {"type": "Input", "params": {"name": self.name, "prompt": self.prompt}}
-
-
-class If(AST):
-    def __init__(self, condition, true_block, false_block):
-        self.condition = condition
-        self.true_block = true_block
-        self.false_block = false_block
-
-    def codify(self):
-        global current_indent
-        flag = True
-        newline = "\n" + "\t" * (current_indent + 1)
-        code = newline[:-1] + f"if {self.condition.codify()}:"
-        for stmt in self.true_block:
-            if isinstance(stmt, (If, While)):
-                current_indent += 1
-                code += str(stmt.codify())
-                current_indent -= 1
-                flag = False
-                continue
-            elif flag:
-                code += newline
-                flag = False
-            code += str(stmt.codify())
-        if self.false_block is None:
-            return code + newline[:-1]
-        flag = True
-        code += newline[:-1] + "else:"
-        for stmt in self.false_block:
-            if isinstance(stmt, (If, While)):
-                current_indent += 1
-                code += str(stmt.codify())
-                current_indent -= 1
-                flag = False
-                continue
-            elif flag:
-                code += newline
-                flag = False
-            code += str(stmt.codify())
-        return code + newline[:-1]
-
-    def serialise(self):
-        return {
-            "type": "If",
-            "params": {
-                "condition": self.condition,
-                "true_block": self.true_block,
-                "false_block": self.false_block
-            }
-        }
-
-
-class While(AST):
-    def __init__(self, condition, code_block):
-        self.condition = condition
-        self.code_block = code_block
-
-    def codify(self):
-        global current_indent
-        flag = True
-        newline = "\n" + "\t" * (current_indent + 1)
-        code = newline[:-1] + f"while {self.condition.codify()}:"
-        for stmt in self.code_block:
-            if isinstance(stmt, (If, While)):
-                current_indent += 1
-                code += str(stmt.codify())
-                current_indent -= 1
-                flag = False
-                continue
-            elif flag:
-                code += newline
-                flag = False
-            code += str(stmt.codify())
-        return code
-
-    def serialise(self):
-        return {
-            "type": "While",
-            "params": {
-                "condition": self.condition,
-                "code_block": self.code_block
-            }
-        }
 
 
 class BinaryOps(AST):
