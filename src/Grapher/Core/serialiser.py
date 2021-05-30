@@ -17,15 +17,10 @@ def json_decode_hook(o):
         "BinaryOps",
         "Comparison",
         "Evaluation",
-        "If",
-        "Input",
         "Plot",
         "Print",
         "Program",
         "Solve",
-        "StringAdd",
-        "While",
-        "Cast",
     ]
     t = o.get("type", None)
     if t is not None and t in obj_list:
