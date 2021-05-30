@@ -13,12 +13,9 @@ stmts          : stmt_semicolon
 
 stmt_semicolon : stmt SEMICOLON
 
-stmt           : func_decl
-               | assignment
+stmt           : assignment
                | print_stmt
                | plot_stmt
-
-func_decl      : ID LPAREN ID RPAREN EQUAL sum
 
 assignment     : ID EQUAL expr
 
