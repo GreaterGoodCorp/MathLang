@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='Grapher-Core',
+    name='Grapher',
     version='',
     packages=['Grapher', 'Grapher.Core'],
     package_dir={'': 'src'},
