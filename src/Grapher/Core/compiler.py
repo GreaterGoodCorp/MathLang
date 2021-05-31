@@ -1,7 +1,8 @@
 import os
-import dill
 import hmac
 import base64
+
+import dill
 from py import code
 
 from Grapher.Core import generate_ast
