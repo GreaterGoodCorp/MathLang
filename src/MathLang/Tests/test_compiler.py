@@ -2,7 +2,7 @@ from pathlib import Path
 
 from pytest import fixture
 
-from Grapher.Core import execute
+from MathLang.Core import execute
 
 test_data_path = Path(__file__).parent.absolute() / "test_data"
 

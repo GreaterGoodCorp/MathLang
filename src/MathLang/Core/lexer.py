@@ -100,7 +100,7 @@ class Lexer:
     def lex(self, s) -> Generator[Token, None, None]:
         """Yields a stream of tokens from source.
 
-        :param s: Grapher source code.
+        :param s: MathLang source code.
         :type s: str
         :return: A stream of tokens.
         :rtype: Generator[Token]
@@ -113,12 +113,12 @@ class Lexer:
 
 
 def get_source_signature(source) -> str:
-    """Gets signature of Grapher source.
+    """Gets signature of MathLang source.
 
     Note that the signature only takes into account the source code, not any comments. As a result, two sources might
     have the same signature despite the fact that their hashes are different.
 
-    :param source: Grapher source code.
+    :param source: MathLang source code.
     :type source: str
     :return: A signature string.
     :rtype: str

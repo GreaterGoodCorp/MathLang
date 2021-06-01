@@ -1,7 +1,7 @@
 from os import PathLike
 from typing import Any
 
-from Grapher.Core import Compiler
+from MathLang.Core import Compiler
 
 
 def compile_file_to_file(in_file: PathLike, out_file: PathLike) -> None:

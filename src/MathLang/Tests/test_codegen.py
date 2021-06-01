@@ -3,7 +3,7 @@ from json import dumps, loads
 
 from pytest import fixture
 
-from Grapher.Core import deserialise_ast, generate_ast, generate_python_code
+from MathLang.Core import deserialise_ast, generate_ast, generate_python_code
 
 test_data_path = Path(__file__).parent.absolute() / "test_data"
 

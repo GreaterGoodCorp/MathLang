@@ -218,11 +218,11 @@ class UndefinedName(BaseException):
 
 
 def generate_python_code(ast: AST) -> str:
-    """Generate valid Python code from Grapher AST.
+    """Generate valid Python code from MathLang AST.
 
     The generated python code will be changed from time to time.
 
-    :param ast: The abstract syntax tree of Grapher source code.
+    :param ast: The abstract syntax tree of MathLang source code.
     :type ast: AST
     :return: A Python code string.
     :rtype: str

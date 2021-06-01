@@ -1,10 +1,10 @@
-# Grapher
+# MathLang
 
-Grapher is a specially designed programming language for maths.
+MathLang is a specially designed programming language for maths.
 
 ## Features
 
-Grapher can:
+MathLang can:
 
 * Solve maths equations
 
@@ -18,7 +18,7 @@ And what's the best thing about it? You can do any of this with a single line!
 
 ## Examples
 
-A simple Grapher program looks like this:
+A simple MathLang program looks like this:
 ```
 # Define f(x)
 # x is a reserved name for variables
@@ -46,13 +46,13 @@ _To be updated..._
 
 ## Limitation
 
-As of now, the backend of Grapher is a Grapher-to-Python transpiler. In other words, Grapher source code is translated
+As of now, the backend of MathLang is a MathLang-to-Python transpiler. In other words, Grapher source code is translated
 to Python source code, which is then executed with a Python engine.
 
-Hence, the performance of Grapher largely depends on Python itself (and various other dependencies).
+Hence, the performance of MathLang largely depends on Python itself (and various other dependencies).
 The reason for this is that Python has a repertoire of libraries that make symbolic maths and plotting simpler to do.
 
-However, in the future, we aim to either (1) develop a Grapher-to-C transpiler or (2) incorporate a Python-to-C
+However, in the future, we aim to either (1) develop a MathLang-to-C transpiler or (2) incorporate a Python-to-C
 transpiler with the current Grapher-to-Python one.
 
 ## License

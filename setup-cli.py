@@ -4,12 +4,12 @@ with open("README.md") as f:
     long_desc = f.read()
 
 setup(
-    name='MathLang',
+    name='MathLang-CLI',
     version='2021.0',
     author='GreaterGoodCorp',
     author_email='binhnt.mdev@gmail.com',
     license='MIT License',
-    description='MathLang is a specially designed programming language for maths.',
+    description='MathLang-CLI is an extension for MathLang to support CLI application.',
     long_description=long_desc,
     long_description_content_type="text/markdown",
     classifiers=[
@@ -30,12 +30,11 @@ setup(
     project_urls={
         "Bug Tracker": "https://github.com/GreaterGoodCorp/MathLang/issues",
     },
-    packages=['MathLang', 'MathLang.Core'],
+    packages=['MathLang.Interface.CLI'],
     package_dir={'': 'src'},
     install_requires=[
-        "rply~=0.7.7",
-        "sympy~=1.8",
-        "dill~=0.3.3",
+        "MathLang~=2021.0",
+        "click~=8.0.1",
     ],
     python_requires=">=3.6",
 )

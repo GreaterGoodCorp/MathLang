@@ -2,7 +2,7 @@ from pathlib import Path
 
 from pytest import fixture
 
-from Grapher.Core import get_source_signature
+from MathLang.Core import get_source_signature
 
 test_data_path = Path(__file__).parent.absolute() / "test_data"
 

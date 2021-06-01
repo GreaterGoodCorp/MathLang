@@ -1,7 +1,7 @@
 from rply import ParserGenerator
 
-from Grapher.Core import Lexer
-from Grapher.Core.nodes import *
+from MathLang.Core import Lexer
+from MathLang.Core.nodes import *
 
 
 class Parser:
@@ -149,18 +149,18 @@ class Parser:
             raise InvalidToken(token)
 
     def parse(self, tokens):
-        """Parses the token stream into Grapher AST. Please do not call this function directly, use 'generate_ast()'
+        """Parses the token stream into MathLang AST. Please do not call this function directly, use 'generate_ast()'
         instead for AST generation.
         """
         return self.parser.parse(tokens)
 
 
 def generate_ast(source: str) -> AST:
-    """Generates Grapher AST from Grapher source code.
+    """Generates MathLang AST from MathLang source code.
 
-    :param source: Grapher source code.
+    :param source: MathLang source code.
     :type source: str
-    :return: Grapher AST.
+    :return: MathLang AST.
     :rtype: str
     """
     lexer = Lexer()

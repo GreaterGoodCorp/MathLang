@@ -5,17 +5,17 @@ import base64
 import dill
 from py import code
 
-from Grapher.Core import generate_ast
+from MathLang.Core import generate_ast
 
 
 class Compiler:
     @staticmethod
     def py_compile(source: str) -> bytes:
-        """Compiles Grapher source code to Grapher bytecode.
+        """Compiles MathLang source code to MathLang bytecode.
 
-        :param source: Grapher source code.
+        :param source: MathLang source code.
         :type source: str
-        :return: Grapher bytecode.
+        :return: MathLang bytecode.
         :rtype: bytes
         """
         ast = generate_ast(source)
@@ -25,9 +25,9 @@ class Compiler:
 
     @staticmethod
     def py_decompile(source: bytes, unsafe: bool = False) -> code:
-        """Decompile Grapher bytecode to Python bytecode.
+        """Decompile MathLang bytecode to Python bytecode.
 
-        :param source: Grapher bytecode.
+        :param source: MathLang bytecode.
         :type source: bytes
         :param unsafe: Whether to enable unsafe decompilation.
         :type unsafe: bytes
@@ -47,7 +47,7 @@ class Compiler:
         try:
             return Compiler.__decompile(bytecode)
         except (EOFError, ValueError, TypeError):
-            raise ValueError("Grapher bytecode cannot be decompiled due to data corruption.")
+            raise ValueError("MathLang bytecode cannot be decompiled due to data corruption.")
 
     @staticmethod
     def get_signing_key():
@@ -55,7 +55,7 @@ class Compiler:
 
     @staticmethod
     def __compile(source):
-        return dill.dumps(compile(source, "<Grapher>", "exec", optimize=2))
+        return dill.dumps(compile(source, "<MathLang>", "exec", optimize=2))
 
     @staticmethod
     def __decompile(bytecode):
@@ -91,6 +91,6 @@ class UnsafeDecompilationError(BaseException):
 
 
 def execute(source) -> None:
-    """Executes Grapher source code. This function is dangerous and used for debugging purposes only."""
+    """Executes MathLang source code. This function is dangerous and used for debugging purposes only."""
     s = Compiler.py_compile(source)
     exec(Compiler.py_decompile(s, True))
