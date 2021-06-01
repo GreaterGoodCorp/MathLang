@@ -10,7 +10,7 @@ from Grapher.Core import generate_ast
 
 class Compiler:
     @staticmethod
-    def compile(source: str) -> bytes:
+    def py_compile(source: str) -> bytes:
         """Compiles Grapher source code to Grapher bytecode.
 
         :param source: Grapher source code.
@@ -24,7 +24,7 @@ class Compiler:
         return bytecode + signature
 
     @staticmethod
-    def decompile(source: bytes, unsafe: bool = False) -> code:
+    def py_decompile(source: bytes, unsafe: bool = False) -> code:
         """Decompile Grapher bytecode to Python bytecode.
 
         :param source: Grapher bytecode.
@@ -92,5 +92,5 @@ class UnsafeDecompilationError(BaseException):
 
 def execute(source) -> None:
     """Executes Grapher source code. This function is dangerous and used for debugging purposes only."""
-    s = Compiler.compile(source)
-    exec(Compiler.decompile(s, True))
+    s = Compiler.py_compile(source)
+    exec(Compiler.py_decompile(s, True))
