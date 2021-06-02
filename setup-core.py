@@ -4,7 +4,7 @@ with open("README.md") as f:
     long_desc = f.read()
 
 setup(
-    name='MathLang',
+    name='MathLang-Core',
     version='2021.0',
     author='GreaterGoodCorp',
     author_email='binhnt.mdev@gmail.com',
